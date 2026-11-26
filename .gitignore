@@ -1,0 +1,41 @@
+# Dependencies
+node_modules/
+*/node_modules/
+.pnp
+.pnp.js
+
+# Production build artifacts
+dist/
+build/
+frontend/dist/
+
+# Python cache & artifacts
+__pycache__/
+*/__pycache__/
+*/*/__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv/
+
+# Testing & Linters
+.pytest_cache/
+.coverage
+htmlcov/
+.eslintcache
+
+# Environment variables
+.env
+backend/.env
+
+# OS and Editor files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo

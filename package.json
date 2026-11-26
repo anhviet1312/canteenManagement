@@ -1,0 +1,17 @@
+{
+  "name": "ctech-canteen-management",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Hệ thống thông tin Quản lý Căng tin Trường Cao đẳng CTECH (MIS Cao học)",
+  "scripts": {
+    "start": "cmd /c start_system.bat",
+    "dev": "concurrently -k -n \"BACKEND,FRONTEND\" -c \"blue,green\" \"python backend/run_backend.py\" \"npm --prefix frontend run dev\"",
+    "dev:backend": "python backend/run_backend.py",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "build": "npm --prefix frontend run build",
+    "seed": "python -m backend.app.seed"
+  },
+  "devDependencies": {
+    "concurrently": "^10.0.7"
+  }
+}
