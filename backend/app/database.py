@@ -18,6 +18,10 @@ NEON_DEFAULT_URL = (
 
 DATABASE_URL = os.getenv("DATABASE_URL", NEON_DEFAULT_URL)
 
+# Normalize postgres:// to postgresql:// for SQLAlchemy compatibility on cloud platforms (Render/Heroku)
+if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+
 # Configure SQLAlchemy engine with pool_pre_ping for cloud PostgreSQL (Neon)
 engine = create_engine(
     DATABASE_URL,

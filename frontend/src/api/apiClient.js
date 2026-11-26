@@ -1,5 +1,9 @@
-// API Client connecting to Python FastAPI Backend (PostgreSQL 17)
-const BASE_URL = '/api';
+// API Client connecting to Python FastAPI Backend (PostgreSQL)
+// Supports Vercel deployment with VITE_API_URL or local proxy fallback to '/api'
+const API_BASE = import.meta.env.VITE_API_URL
+  ? (import.meta.env.VITE_API_URL.endsWith('/') ? import.meta.env.VITE_API_URL.slice(0, -1) : import.meta.env.VITE_API_URL)
+  : '';
+const BASE_URL = `${API_BASE}/api`;
 
 export const apiClient = {
   getHeaders: () => {
