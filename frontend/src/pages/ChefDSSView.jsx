@@ -76,7 +76,7 @@ export default function ChefDSSView() {
           </div>
           <h2 className="text-xl font-bold text-white mt-1">Mô Hình Dự Báo & Tối Ưu Tồn Kho Bếp</h2>
           <p className="text-xs text-slate-300 mt-0.5">
-            Áp dụng thuật toán $Q = \max\left(0, D_{ctool} + D_{hssv} + SS - I_{current} - Q_{incoming}\right)$ giải quyết bài toán chống lãng phí thực phẩm tươi.
+            Áp dụng thuật toán cân đối nhu cầu: <span className="font-mono text-cyan-400 font-semibold">Q = max(0, D_ctool + D_hssv + SS - I_current - Q_incoming)</span> giải quyết bài toán chống lãng phí thực phẩm tươi.
           </p>
         </div>
 
