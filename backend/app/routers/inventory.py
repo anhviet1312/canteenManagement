@@ -123,8 +123,11 @@ def adjust_stock(
     user_info: dict = Depends(get_current_user_from_header),
     db: Session = Depends(get_db)
 ):
-    if user_info["role"] not in ["STOREKEEPER", "ADMIN"]:
-        raise HTTPException(status_code=403, detail="Chỉ Thủ kho mới có quyền điều chỉnh kiểm kê")
+    if user_info["role"] != "STOREKEEPER":
+        raise HTTPException(
+            status_code=403,
+            detail="Nghiệp vụ điều chỉnh tồn kho kiểm kê chỉ thuộc thẩm quyền của Thủ kho (STOREKEEPER). Quản trị viên chỉ có quyền giám sát."
+        )
 
     mat = db.query(Material).filter(Material.id == req.material_id).first()
     if not mat:

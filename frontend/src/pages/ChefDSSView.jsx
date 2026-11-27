@@ -7,11 +7,14 @@ import {
   Users2,
   Layers,
   TrendingUp,
-  FileCheck
+  FileCheck,
+  Lock
 } from 'lucide-react';
 
 export default function ChefDSSView() {
-  const { createPurchaseRequest, setActiveTab } = useApp();
+  const { createPurchaseRequest, setActiveTab, currentUser } = useApp();
+
+  const isChef = currentUser?.role === 'CHEF';
 
   const [safetyFactor, setSafetyFactor] = useState(1.0);
   const [studentDemandGrowth, setStudentDemandGrowth] = useState(1.1);
@@ -80,14 +83,23 @@ export default function ChefDSSView() {
           </p>
         </div>
 
-        <button
-          disabled={recommendedItems.length === 0}
-          onClick={handle1ClickCreatePR}
-          className="px-5 py-2.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 disabled:opacity-40 text-white rounded-xl text-xs font-bold shadow-lg shadow-indigo-600/30 transition flex items-center space-x-2"
-        >
-          <BrainCircuit className="w-4 h-4" />
-          <span>1-Click Chuyển Thành Đề Xuất Mua Hàng ({recommendedItems.length} mặt hàng)</span>
-        </button>
+        {isChef ? (
+          <button
+            disabled={recommendedItems.length === 0}
+            onClick={handle1ClickCreatePR}
+            className="px-5 py-2.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 disabled:opacity-40 text-white rounded-xl text-xs font-bold shadow-lg shadow-indigo-600/30 transition flex items-center space-x-2"
+          >
+            <BrainCircuit className="w-4 h-4" />
+            <span>1-Click Chuyển Thành Đề Xuất Mua Hàng ({recommendedItems.length} mặt hàng)</span>
+          </button>
+        ) : (
+          <div className="flex items-center space-x-2">
+            <span className="px-3.5 py-2 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-semibold flex items-center gap-1.5">
+              <Lock className="w-3.5 h-3.5 text-amber-400" />
+              <span>Chỉ Bếp trưởng được chuyển PR</span>
+            </span>
+          </div>
+        )}
       </div>
 
       {/* Controller Parameters */}

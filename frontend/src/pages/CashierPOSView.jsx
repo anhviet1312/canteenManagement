@@ -17,11 +17,15 @@ import {
   UserCheck,
   AlertCircle,
   X,
-  Loader2
+  Loader2,
+  ShieldAlert,
+  Lock
 } from 'lucide-react';
 
 export default function CashierPOSView() {
   const { products, categories, completeOrder, currentUser } = useApp();
+
+  const isCashier = currentUser?.role === 'CASHIER';
 
   const [selectedCategory, setSelectedCategory] = useState('ALL');
   const [searchTerm, setSearchTerm] = useState('');
@@ -171,6 +175,15 @@ export default function CashierPOSView() {
     <div className="p-4 lg:p-6 h-[calc(100vh-65px)] flex flex-col lg:flex-row gap-5">
       {/* Left: Product Catalog (65%) */}
       <div className="flex-1 flex flex-col bg-slate-900/90 border border-slate-800 rounded-2xl overflow-hidden shadow-xl">
+        {!isCashier && (
+          <div className="bg-amber-950/40 border-b border-amber-800/60 px-4 py-2 text-xs text-amber-300 flex flex-wrap items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <ShieldAlert className="w-4 h-4 text-amber-400 shrink-0" />
+              <span>Người giám sát: <strong>{currentUser?.full_name}</strong> • Bạn đang ở Chế độ Giám sát danh mục món ăn (Chỉ Xem).</span>
+            </div>
+            <span className="text-[11px] text-amber-400 font-semibold">• Thao tác bán hàng & thu tiền thuộc thẩm quyền của Thu ngân (Đặng Thùy Linh)</span>
+          </div>
+        )}
         <div className="p-4 border-b border-slate-800 space-y-3">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="relative flex-1 min-w-[240px]">
@@ -279,8 +292,13 @@ export default function CashierPOSView() {
           <div className="flex items-center space-x-2">
             <ShoppingBag className="w-4 h-4 text-blue-400" />
             <h3 className="text-sm font-bold text-white">Giỏ Hàng POS</h3>
+            {!isCashier && (
+              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                Chỉ Xem
+              </span>
+            )}
           </div>
-          {cart.length > 0 && (
+          {isCashier && cart.length > 0 && (
             <button onClick={clearCart} className="text-xs text-rose-400 hover:text-rose-300 flex items-center gap-1">
               <Trash2 className="w-3.5 h-3.5" /> Xóa
             </button>
@@ -471,22 +489,29 @@ export default function CashierPOSView() {
             <span className="text-emerald-400 font-mono text-lg">{totalAmount.toLocaleString()} đ</span>
           </div>
 
-          <button
-            disabled={cart.length === 0 || (isCtoolMeal && (!selectedStaff || selectedStaff.is_served))}
-            onClick={handleOpenPayment}
-            className="w-full mt-3 py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold text-sm shadow-lg shadow-emerald-600/30 transition flex items-center justify-center space-x-2"
-          >
-            <Banknote className="w-4 h-4" />
-            <span>
-              {cart.length === 0
-                ? 'Giỏ hàng đang trống'
-                : isCtoolMeal && !selectedStaff
-                ? 'Vui lòng chọn CBNV Ctool'
-                : isCtoolMeal && selectedStaff?.is_served
-                ? 'CBNV này đã nhận suất hôm nay'
-                : `Thanh Toán (${totalAmount.toLocaleString()} đ)`}
-            </span>
-          </button>
+          {isCashier ? (
+            <button
+              disabled={cart.length === 0 || (isCtoolMeal && (!selectedStaff || selectedStaff.is_served))}
+              onClick={handleOpenPayment}
+              className="w-full mt-3 py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 disabled:opacity-40 disabled:cursor-not-allowed text-white font-bold text-sm shadow-lg shadow-emerald-600/30 transition flex items-center justify-center space-x-2"
+            >
+              <Banknote className="w-4 h-4" />
+              <span>
+                {cart.length === 0
+                  ? 'Giỏ hàng đang trống'
+                  : isCtoolMeal && !selectedStaff
+                  ? 'Vui lòng chọn CBNV Ctool'
+                  : isCtoolMeal && selectedStaff?.is_served
+                  ? 'CBNV này đã nhận suất hôm nay'
+                  : `Thanh Toán (${totalAmount.toLocaleString()} đ)`}
+              </span>
+            </button>
+          ) : (
+            <div className="w-full mt-3 p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-semibold flex items-center justify-center gap-1.5 text-center">
+              <Lock className="w-4 h-4 text-amber-400 shrink-0" />
+              <span>Chế độ Chỉ Xem (Thẩm quyền thanh toán thuộc về Thu ngân)</span>
+            </div>
+          )}
         </div>
       </div>
 

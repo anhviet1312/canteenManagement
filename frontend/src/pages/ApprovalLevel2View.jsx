@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { FileCheck2, CheckCircle2, XCircle, AlertCircle } from 'lucide-react';
+import { FileCheck2, CheckCircle2, XCircle, AlertCircle, ShieldAlert, Lock } from 'lucide-react';
 
 export default function ApprovalLevel2View() {
   const { purchaseRequests, approveRequest, rejectRequest, currentUser } = useApp();
+
+  const isTCHC = currentUser?.role === 'TCHC';
 
   const [selectedPR, setSelectedPR] = useState(null);
   const [rejectReason, setRejectReason] = useState('');
@@ -23,9 +25,24 @@ export default function ApprovalLevel2View() {
             <span className="text-xs text-slate-400">Trưởng Phòng TCHC - Thẩm Định Nhu Cầu (Cấp 2)</span>
           </div>
           <h2 className="text-xl font-bold text-white mt-1">Phê Duyệt Nhu Cầu & Tính Cấp Thiết (Cấp 2)</h2>
-          <p className="text-xs text-slate-300 mt-0.5">
-            Người phê duyệt: <strong className="text-white">{currentUser.full_name} (TP. TCHC)</strong> • Kiểm tra sự cần thiết của nguyên liệu trước khi chuyển tiếp sang Kế toán.
-          </p>
+          {isTCHC ? (
+            <p className="text-xs text-slate-300 mt-0.5">
+              Người phê duyệt: <strong className="text-white">{currentUser.full_name} (TP. TCHC)</strong> • Kiểm tra sự cần thiết của nguyên liệu trước khi chuyển tiếp sang Kế toán.
+            </p>
+          ) : (
+            <div className="flex items-center space-x-2 mt-1 flex-wrap gap-y-1">
+              <span className="text-xs text-slate-300">
+                Người giám sát: <strong className="text-white">{currentUser.full_name}</strong>
+              </span>
+              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 flex items-center gap-1">
+                <ShieldAlert className="w-3 h-3 text-amber-400" />
+                Chế độ Giám sát (Chỉ Xem)
+              </span>
+              <span className="text-xs text-slate-400">
+                • Thẩm quyền phê duyệt nhu cầu thuộc về <strong className="text-blue-400">Trưởng phòng TCHC (Trần Thị Mai)</strong>
+              </span>
+            </div>
+          )}
         </div>
 
         <span className="px-3 py-1.5 rounded-xl bg-blue-950 border border-blue-800 text-blue-300 font-mono text-xs font-bold">
@@ -99,25 +116,34 @@ export default function ApprovalLevel2View() {
                   Sau khi duyệt, phiếu sẽ chuyển thẳng sang Kế toán trưởng thẩm định giá.
                 </span>
 
-                <div className="flex space-x-2">
-                  <button
-                    onClick={() => {
-                      setSelectedPR(pr);
-                      setShowRejectModal(true);
-                    }}
-                    className="px-4 py-2 bg-rose-950/60 hover:bg-rose-900 border border-rose-800 text-rose-300 rounded-xl text-xs font-semibold transition"
-                  >
-                    Từ chối
-                  </button>
+                {isTCHC ? (
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={() => {
+                        setSelectedPR(pr);
+                        setShowRejectModal(true);
+                      }}
+                      className="px-4 py-2 bg-rose-950/60 hover:bg-rose-900 border border-rose-800 text-rose-300 rounded-xl text-xs font-semibold transition"
+                    >
+                      Từ chối
+                    </button>
 
-                  <button
-                    onClick={() => approveRequest(pr.id, "Xác nhận tính cấp thiết và phê duyệt nhu cầu Cấp 2")}
-                    className="px-5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold shadow-md shadow-emerald-600/30 transition flex items-center space-x-1.5"
-                  >
-                    <CheckCircle2 className="w-4 h-4" />
-                    <span>Phê Duyệt Nhu Cầu (Cấp 2)</span>
-                  </button>
-                </div>
+                    <button
+                      onClick={() => approveRequest(pr.id, "Xác nhận tính cấp thiết và phê duyệt nhu cầu Cấp 2")}
+                      className="px-5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold shadow-md shadow-emerald-600/30 transition flex items-center space-x-1.5"
+                    >
+                      <CheckCircle2 className="w-4 h-4" />
+                      <span>Phê Duyệt Nhu Cầu (Cấp 2)</span>
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex items-center space-x-2">
+                    <span className="px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-semibold flex items-center gap-1.5">
+                      <Lock className="w-3.5 h-3.5 text-amber-400" />
+                      <span>Chỉ TP. TCHC mới có thẩm quyền duyệt</span>
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
           ))}

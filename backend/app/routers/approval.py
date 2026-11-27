@@ -68,9 +68,9 @@ def create_purchase_request(
     user_info: dict = Depends(get_current_user_from_header),
     db: Session = Depends(get_db)
 ):
-    # Only CHEF or ADMIN can create PR
-    if user_info["role"] not in ["CHEF", "ADMIN"]:
-        raise HTTPException(status_code=403, detail="Chỉ Bếp trưởng mới có quyền lập đề xuất mua hàng (PR)")
+    # Only CHEF can create PR (Strict SoD)
+    if user_info["role"] != "CHEF":
+        raise HTTPException(status_code=403, detail="Chỉ Bếp trưởng (CHEF) mới có thẩm quyền lập đề xuất mua hàng (PR - BM01).")
 
     pr_count = db.query(PurchaseRequest).count() + 1
     pr_id = f"PR-202611-{pr_count:03d}"
@@ -146,24 +146,24 @@ def approve_request(
     name = user_info["name"]
     now_str = datetime.now().strftime("%Y-%m-%d %H:%M")
 
-    # Strict RBAC Check
+    # Strict RBAC Check (Strict Segregation of Duties)
     if pr.status == "PENDING_TCHC":
-        if role not in ["TCHC", "ADMIN"]:
-            raise HTTPException(status_code=403, detail="Chỉ Trưởng phòng TCHC mới có thẩm quyền duyệt Cấp 2")
+        if role != "TCHC":
+            raise HTTPException(status_code=403, detail="Chỉ Trưởng phòng TCHC mới có thẩm quyền duyệt Cấp 2. Quản trị viên chỉ có quyền giám sát.")
         pr.status = "PENDING_ACCOUNTANT"
         pr.current_level = 3
         step_num = 2
         action_name = "PHÊ_DUYỆT_CẤP_2"
     elif pr.status == "PENDING_ACCOUNTANT":
-        if role not in ["ACCOUNTANT", "ADMIN"]:
-            raise HTTPException(status_code=403, detail="Chỉ Kế toán trưởng mới có thẩm quyền duyệt Cấp 3")
+        if role != "ACCOUNTANT":
+            raise HTTPException(status_code=403, detail="Chỉ Kế toán trưởng mới có thẩm quyền duyệt Cấp 3. Quản trị viên chỉ có quyền giám sát.")
         pr.status = "PENDING_CHAIRMAN"
         pr.current_level = 4
         step_num = 3
         action_name = "PHÊ_DUYỆT_CẤP_3"
     elif pr.status == "PENDING_CHAIRMAN":
-        if role not in ["CHAIRMAN", "ADMIN"]:
-            raise HTTPException(status_code=403, detail="Chỉ Chủ tịch Hội đồng trường mới có thẩm quyền duyệt Cấp 4 (Ký duyệt chi)")
+        if role != "CHAIRMAN":
+            raise HTTPException(status_code=403, detail="Chỉ Chủ tịch Hội đồng trường mới có thẩm quyền duyệt Cấp 4 (Ký duyệt chi). Quản trị viên chỉ có quyền giám sát.")
         pr.status = "APPROVED"
         pr.current_level = 4
         pr.po_number = f"PO-202611-{uuid.uuid4().hex[:4].upper()}"
@@ -219,13 +219,13 @@ def reject_request(
     name = user_info["name"]
     now_str = datetime.now().strftime("%Y-%m-%d %H:%M")
 
-    # Role validation
-    if pr.status == "PENDING_TCHC" and role not in ["TCHC", "ADMIN"]:
-        raise HTTPException(status_code=403, detail="Chỉ Trưởng phòng TCHC mới có quyền từ chối ở Cấp 2")
-    if pr.status == "PENDING_ACCOUNTANT" and role not in ["ACCOUNTANT", "ADMIN"]:
-        raise HTTPException(status_code=403, detail="Chỉ Kế toán trưởng mới có quyền từ chối ở Cấp 3")
-    if pr.status == "PENDING_CHAIRMAN" and role not in ["CHAIRMAN", "ADMIN"]:
-        raise HTTPException(status_code=403, detail="Chỉ Chủ tịch HĐT mới có quyền từ chối ở Cấp 4")
+    # Role validation (Strict SoD)
+    if pr.status == "PENDING_TCHC" and role != "TCHC":
+        raise HTTPException(status_code=403, detail="Chỉ Trưởng phòng TCHC mới có quyền từ chối ở Cấp 2. Quản trị viên chỉ có quyền giám sát.")
+    if pr.status == "PENDING_ACCOUNTANT" and role != "ACCOUNTANT":
+        raise HTTPException(status_code=403, detail="Chỉ Kế toán trưởng mới có quyền từ chối ở Cấp 3. Quản trị viên chỉ có quyền giám sát.")
+    if pr.status == "PENDING_CHAIRMAN" and role != "CHAIRMAN":
+        raise HTTPException(status_code=403, detail="Chỉ Chủ tịch HĐT mới có quyền từ chối ở Cấp 4. Quản trị viên chỉ có quyền giám sát.")
 
     pr.status = "REJECTED"
 

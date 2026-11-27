@@ -1,12 +1,20 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Header
 from sqlalchemy.orm import Session
 from ..database import get_db
 from ..models import Order, OrderItem, Product, Recipe, Material, AuditLog, CtoolMeal
 from ..schemas import OrderCreate
 import uuid
 from datetime import datetime
+from urllib.parse import unquote
 
 router = APIRouter(prefix="/api/pos", tags=["pos"])
+
+def get_current_user_from_header(x_user_role: str = Header(None), x_user_name: str = Header(None)):
+    name = unquote(x_user_name) if x_user_name else "Đặng Thùy Linh"
+    return {
+        "role": x_user_role or "CASHIER",
+        "name": name
+    }
 
 @router.get("/orders")
 def get_orders(cashier: str = None, db: Session = Depends(get_db)):
@@ -40,7 +48,17 @@ def get_orders(cashier: str = None, db: Session = Depends(get_db)):
     return results
 
 @router.post("/checkout")
-def checkout_order(order_data: OrderCreate, db: Session = Depends(get_db)):
+def checkout_order(
+    order_data: OrderCreate,
+    user_info: dict = Depends(get_current_user_from_header),
+    db: Session = Depends(get_db)
+):
+    if user_info["role"] != "CASHIER":
+        raise HTTPException(
+            status_code=403,
+            detail="Nghiệp vụ thu tiền và bán hàng tại quầy POS chỉ thuộc thẩm quyền của Thu ngân (CASHIER). Quản trị viên chỉ có quyền giám sát."
+        )
+
     order_id = f"ORD-{datetime.now().strftime('%Y%m%d')}-{uuid.uuid4().hex[:4].upper()}"
     now_str = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
@@ -54,7 +72,7 @@ def checkout_order(order_data: OrderCreate, db: Session = Depends(get_db)):
         discount=order_data.discount,
         total_amount=order_data.total_amount,
         payment_method=order_data.payment_method,
-        cashier_name=order_data.cashier_name or "Đặng Thùy Linh"
+        cashier_name=order_data.cashier_name or user_info["name"] or "Đặng Thùy Linh"
     )
     db.add(new_order)
 

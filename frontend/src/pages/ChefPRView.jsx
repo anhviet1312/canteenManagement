@@ -6,12 +6,16 @@ import {
   Clock,
   CheckCircle2,
   XCircle,
-  FileText
+  FileText,
+  ShieldAlert,
+  Lock
 } from 'lucide-react';
 
 export default function ChefPRView() {
   const { purchaseRequests, materials, createPurchaseRequest, currentUser } = useApp();
   const [showCreateModal, setShowCreateModal] = useState(false);
+
+  const isChef = currentUser?.role === 'CHEF';
 
   // Form state
   const [title, setTitle] = useState('');
@@ -92,18 +96,40 @@ export default function ChefPRView() {
             <span className="text-xs text-slate-400">Phiếu Đề Xuất Mua Hàng & Phê Duyệt Bốn Cấp</span>
           </div>
           <h2 className="text-xl font-bold text-white mt-1">Quản Lý & Theo Dõi Đề Xuất Mua Hàng</h2>
-          <p className="text-xs text-slate-300 mt-0.5">
-            Bếp trưởng khởi tạo đề xuất mua (Cấp 1) và theo dõi tiến trình phê duyệt của TP. TCHC, Kế toán và Chủ tịch HĐT.
-          </p>
+          {isChef ? (
+            <p className="text-xs text-slate-300 mt-0.5">
+              Người lập phiếu: <strong className="text-white">{currentUser.full_name} (Bếp trưởng)</strong> • Khởi tạo đề xuất mua (Cấp 1) và theo dõi tiến trình phê duyệt của TP. TCHC, Kế toán và Chủ tịch HĐT.
+            </p>
+          ) : (
+            <div className="flex items-center space-x-2 mt-1 flex-wrap gap-y-1">
+              <span className="text-xs text-slate-300">
+                Người giám sát: <strong className="text-white">{currentUser.full_name}</strong>
+              </span>
+              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 flex items-center gap-1">
+                <ShieldAlert className="w-3 h-3 text-amber-400" />
+                Chế độ Giám sát (Chỉ Xem)
+              </span>
+              <span className="text-xs text-slate-400">
+                • Thẩm quyền lập đề xuất mua hàng thuộc về <strong className="text-emerald-400">Bếp trưởng (Nguyễn Văn Đạt)</strong>
+              </span>
+            </div>
+          )}
         </div>
 
-        <button
-          onClick={() => setShowCreateModal(true)}
-          className="px-4 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-600/30 transition flex items-center space-x-2"
-        >
-          <Plus className="w-4 h-4" />
-          <span>Lập Phiếu Đề Xuất Mới (PR)</span>
-        </button>
+        {isChef ? (
+          <button
+            onClick={() => setShowCreateModal(true)}
+            className="px-4 py-2.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-600/30 transition flex items-center space-x-2"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Lập Phiếu Đề Xuất Mới (PR)</span>
+          </button>
+        ) : (
+          <span className="px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-semibold flex items-center gap-1.5">
+            <Lock className="w-3.5 h-3.5 text-amber-400" />
+            <span>Chỉ Bếp trưởng được lập PR</span>
+          </span>
+        )}
       </div>
 
       {/* List of PRs */}

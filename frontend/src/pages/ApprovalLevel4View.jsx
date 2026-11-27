@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { FileCheck2, CheckCircle2, XCircle, AlertCircle, PackageCheck } from 'lucide-react';
+import { FileCheck2, CheckCircle2, XCircle, AlertCircle, PackageCheck, ShieldAlert, Lock } from 'lucide-react';
 
 export default function ApprovalLevel4View() {
   const { purchaseRequests, approveRequest, rejectRequest, currentUser } = useApp();
+
+  const isChairman = currentUser?.role === 'CHAIRMAN';
 
   const [selectedPR, setSelectedPR] = useState(null);
   const [rejectReason, setRejectReason] = useState('');
@@ -23,9 +25,24 @@ export default function ApprovalLevel4View() {
             <span className="text-xs text-slate-400">Chủ Tịch Hội Đồng Trường - Ký Phê Duyệt Chi Tối Cao (Cấp 4)</span>
           </div>
           <h2 className="text-xl font-bold text-white mt-1">Ký Phê Duyệt Chi Ngân Sách Tối Cao (Cấp 4)</h2>
-          <p className="text-xs text-slate-300 mt-0.5">
-            Lãnh đạo phê duyệt: <strong className="text-white">{currentUser.full_name} (Chủ tịch HĐT)</strong> • Khi ký duyệt, hệ thống sẽ tự động ban hành Đơn mua hàng (PO chính thức) và gửi sang Kho tiếp nhận.
-          </p>
+          {isChairman ? (
+            <p className="text-xs text-slate-300 mt-0.5">
+              Lãnh đạo phê duyệt: <strong className="text-white">{currentUser.full_name} (Chủ tịch HĐT)</strong> • Khi ký duyệt, hệ thống sẽ tự động ban hành Đơn mua hàng (PO chính thức) và gửi sang Kho tiếp nhận.
+            </p>
+          ) : (
+            <div className="flex items-center space-x-2 mt-1 flex-wrap gap-y-1">
+              <span className="text-xs text-slate-300">
+                Người giám sát: <strong className="text-white">{currentUser.full_name}</strong>
+              </span>
+              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 flex items-center gap-1">
+                <ShieldAlert className="w-3 h-3 text-amber-400" />
+                Chế độ Giám sát (Chỉ Xem)
+              </span>
+              <span className="text-xs text-slate-400">
+                • Thẩm quyền ký duyệt chi tối cao thuộc về <strong className="text-rose-400">Chủ tịch Hội đồng trường (TS. Phạm Minh Tuấn)</strong>
+              </span>
+            </div>
+          )}
         </div>
 
         <span className="px-3 py-1.5 rounded-xl bg-rose-950 border border-rose-800 text-rose-300 font-mono text-xs font-bold">
@@ -99,25 +116,34 @@ export default function ApprovalLevel4View() {
                   Ký duyệt sẽ ban hành mã Đơn Đặt Hàng (PO) chính thức và chuyển tiếp sang Kho tiếp nhận.
                 </span>
 
-                <div className="flex space-x-2">
-                  <button
-                    onClick={() => {
-                      setSelectedPR(pr);
-                      setShowRejectModal(true);
-                    }}
-                    className="px-4 py-2 bg-rose-950/60 hover:bg-rose-900 border border-rose-800 text-rose-300 rounded-xl text-xs font-semibold transition"
-                  >
-                    Bác bỏ
-                  </button>
+                {isChairman ? (
+                  <div className="flex space-x-2">
+                    <button
+                      onClick={() => {
+                        setSelectedPR(pr);
+                        setShowRejectModal(true);
+                      }}
+                      className="px-4 py-2 bg-rose-950/60 hover:bg-rose-900 border border-rose-800 text-rose-300 rounded-xl text-xs font-semibold transition"
+                    >
+                      Bác bỏ
+                    </button>
 
-                  <button
-                    onClick={() => approveRequest(pr.id, "Phê duyệt chi ngân sách tối cao. Ban hành Đơn mua hàng PO chính thức.")}
-                    className="px-5 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-emerald-600/30 transition flex items-center space-x-2"
-                  >
-                    <CheckCircle2 className="w-4 h-4" />
-                    <span>Ký Phê Duyệt Chi Hoàn Tất (Cấp 4) - Ban Hành PO</span>
-                  </button>
-                </div>
+                    <button
+                      onClick={() => approveRequest(pr.id, "Phê duyệt chi ngân sách tối cao. Ban hành Đơn mua hàng PO chính thức.")}
+                      className="px-5 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-emerald-600/30 transition flex items-center space-x-2"
+                    >
+                      <CheckCircle2 className="w-4 h-4" />
+                      <span>Ký Phê Duyệt Chi Hoàn Tất (Cấp 4) - Ban Hành PO</span>
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex items-center space-x-2">
+                    <span className="px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-semibold flex items-center gap-1.5">
+                      <Lock className="w-3.5 h-3.5 text-amber-400" />
+                      <span>Chỉ Chủ tịch HĐT mới có thẩm quyền ký duyệt chi</span>
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
           ))}
