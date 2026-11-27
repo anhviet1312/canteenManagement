@@ -5,12 +5,28 @@ from .models import (
     InventoryBatch, CtoolMeal, Order, OrderItem, AuditLog
 )
 
-def seed_database():
+def seed_database(force: bool = False):
     Base.metadata.create_all(bind=engine)
     db = SessionLocal()
 
-    # Check if already seeded
-    if db.query(User).count() > 0:
+    if force:
+        print("🧹 Đang dọn sạch các bảng dữ liệu cũ trên Neon PostgreSQL...")
+        db.query(OrderItem).delete()
+        db.query(Order).delete()
+        db.query(PurchaseTimeline).delete()
+        db.query(PurchaseItem).delete()
+        db.query(PurchaseRequest).delete()
+        db.query(InventoryBatch).delete()
+        db.query(CtoolMeal).delete()
+        db.query(AuditLog).delete()
+        db.query(Recipe).delete()
+        db.query(Product).delete()
+        db.query(Material).delete()
+        db.query(Supplier).delete()
+        db.query(Category).delete()
+        db.query(User).delete()
+        db.commit()
+    elif db.query(User).count() > 0:
         db.close()
         print("Database already seeded.")
         return
