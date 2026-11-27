@@ -62,8 +62,11 @@ def receive_goods(
     user_info: dict = Depends(get_current_user_from_header),
     db: Session = Depends(get_db)
 ):
-    if user_info["role"] not in ["STOREKEEPER", "ADMIN"]:
-        raise HTTPException(status_code=403, detail="Chỉ Thủ kho mới có thẩm quyền nhập kho thực tế")
+    if user_info["role"] != "STOREKEEPER":
+        raise HTTPException(
+            status_code=403,
+            detail="Nghiệp vụ nhập kho thực tế chỉ thuộc thẩm quyền của Thủ kho (STOREKEEPER). Quản trị viên chỉ có quyền giám sát."
+        )
 
     pr = db.query(PurchaseRequest).filter(PurchaseRequest.id == pr_id).first()
     if not pr or pr.status != "APPROVED":
