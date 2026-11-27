@@ -81,20 +81,24 @@ flowchart LR
 * **Nhấn mạnh với Hội đồng:** Menu bên trái của Thu ngân chỉ xuất hiện 2 mục: *Quầy Bán Hàng POS* và *Lịch Sử Đơn Của Ca*. Toàn bộ các chức năng duyệt giá, duyệt chi, quản lý kho đều bị ẩn sạch sẽ.
 
 🎯 **Thao tác 1: Bán hàng cho sinh viên (Thanh toán VietQR)**
-1. Chọn món: **"Cơm sườn nướng mật ong"** (1 suất) + **"Trà đào cam sả"** (1 ly).
-2. Tại giỏ hàng bên phải, chọn loại khách hàng: **HSSV / Khách lẻ**.
-3. Bấm **Thanh Toán Ngay** $\rightarrow$ Chọn phương thức **VietQR Chuyển khoản** $\rightarrow$ Hệ thống sinh mã VietQR động kèm thông tin chuyển khoản.
-4. Bấm **Hoàn Tất Thanh Toán & Trừ Kho Tự Động** $\rightarrow$ Xem bản in hóa đơn bán lẻ.
+1. Chọn món: **"Cơm thịt ba chỉ kho trứng (Suất 30k)"** (1 suất) + **"Trà đào cam sả (22k)"** (1 ly).
+2. Nhấn mạnh: Căn tin phục vụ đầy đủ 2 mức giá cơm HSSV **30.000 đ** và **35.000 đ** theo đúng khảo sát thực tế tại Chương 2.
+3. Tại giỏ hàng bên phải, chọn loại khách hàng: **HSSV / Khách lẻ**.
+4. Bấm **Thanh Toán** $\rightarrow$ Chọn phương thức **VietQR Chuyển khoản** $\rightarrow$ Hệ thống sinh mã VietQR động kèm thông tin chuyển khoản.
+5. Bấm **Xác Nhận & Hoàn Tất Đơn Hàng** $\rightarrow$ Xem bản in hóa đơn bán lẻ.
 
-🎯 **Thao tác 2: Cấp suất ăn cho Cán bộ Giảng viên (Voucher Ctool)**
-1. Chọn 1 suất **"Cơm sườn nướng mật ong"**.
-2. Chọn loại khách hàng: **Cán bộ GV (Suất ăn Ctool)**.
-3. Nhập tên cán bộ: `ThS. Đỗ Thu Hằng - Khoa CNTT`.
-4. Quan sát: Hệ thống tự động áp dụng **Voucher trợ cấp Ctool 35.000đ**, tổng tiền khách trả về **0 đ**.
-5. Bấm **Thanh Toán Ngay** $\rightarrow$ Chọn **Voucher Ctool** $\rightarrow$ Xác nhận hoàn tất.
+🎯 **Thao tác 2: Cấp suất ăn cho Cán bộ Giảng viên (Voucher Ctool & Chống gian lận)**
+1. Chọn 1 suất **"Cơm sườn nướng mật ong (35k)"**.
+2. Chọn loại khách hàng: **Suất ăn CBNV Ctool**.
+3. **Thao tác tìm kiếm thông minh (Debounce Search):**
+   - Nhấn mạnh với Hội đồng: Hệ thống **chặn hoàn toàn việc nhập tên bừa bãi** để tránh thất thoát ngân sách phúc lợi.
+   - Thu ngân gõ tìm kiếm: gõ `Hằng` hoặc mã cán bộ `0520` $\rightarrow$ Dropdown Ctool tự động xổ ra danh sách tương ứng kèm trạng thái.
+   - Chọn đúng giảng viên: `ThS. Đỗ Thu Hằng (CTECH-0520 - Khoa Công nghệ thông tin)`.
+   - Hệ thống tự động kiểm tra: Nếu giảng viên đã nhận suất rồi sẽ **báo đỏ hết lượt và khóa nút thanh toán**. Nếu hợp lệ sẽ tự áp dụng **Voucher trợ cấp Ctool 35.000đ**, tổng tiền khách trả về **0 đ**.
+4. Bấm **Thanh Toán** $\rightarrow$ Chọn **Voucher Ctool** $\rightarrow$ Xác nhận hoàn tất đơn hàng.
 
 🗣️ **Lời thoại thuyết trình (Điểm nhấn học thuật):**
-> *"Kính thưa Thầy/Cô, điểm mấu chốt ở đây là cơ chế tự động hóa giữa POS và Kho thông qua bảng định mức **BOM (Bill of Materials)**. Khi em vừa thanh toán đơn hàng Cơm sườn nướng, động cơ BOM Engine đã tự động khấu trừ tức thì trên CSDL PostgreSQL: **150g sườn heo**, **120g gạo thơm ST25** và **80g rau cải ngọt**, giúp thủ kho không còn phải cân đong thủ công cuối ngày."*
+> *"Kính thưa Thầy/Cô, ở bước này hệ thống giải quyết đồng thời 2 bài toán lớn: Thứ nhất là **chống gian lận và thất thoát chi phí phúc lợi** nhờ việc đối soát chặt chẽ với cơ sở dữ liệu CBNV Ctool theo thời gian thực (chỉ nhận đúng 1 suất/ngày). Thứ hai là cơ chế tự động hóa giữa POS và Kho thông qua bảng định mức **BOM (Bill of Materials)**. Khi em vừa thanh toán đơn hàng, động cơ BOM Engine đã tự động khấu trừ tức thì trên CSDL Neon PostgreSQL: **150g sườn heo**, **120g gạo thơm ST25** và **80g rau cải ngọt**, giúp thủ kho không còn phải cân đong thủ công cuối ngày."*
 
 * **Thao tác kết thúc phần:** Bấm nút **"Đăng xuất"**.
 
@@ -117,42 +121,42 @@ flowchart LR
 2. Kéo thử thanh trượt **Dự báo sinh viên** lên `1.3 (+30%)` $\rightarrow$ Hội đồng quan sát toàn bộ bảng dự toán và số lượng gợi ý $Q_{rec}$ tự động tính toán lại tức thì!
 3. Chỉ vào các dòng có nhãn màu đỏ 🔴 **Nguy cấp (CRITICAL)** (ví dụ: Thịt sườn heo, Rau cải ngọt) vì lượng tồn kho hiện tại không đủ phục vụ ngày mai sau ca bán vừa rồi.
 4. Bấm nút: **"1-Click Chuyển Thành Đề Xuất Mua Hàng (PR)"**.
-5. Quan sát: Hệ thống tự động gom các nguyên liệu thiếu, tính toán ngân sách dự toán và sinh ngay một phiếu đề xuất mua hàng (PR) mới ở trạng thái `PENDING_TCHC`.
+5. Quan sát: Hệ thống tự động gom các nguyên liệu thiếu, tính toán ngân sách dự toán và sinh ngay một phiếu đề xuất mua hàng chuẩn hóa **Biểu Mẫu BM01** ở trạng thái `PENDING_TCHC`.
 
 * **Thao tác kết thúc phần:** Bấm nút **"Đăng xuất"**.
 
 ---
 
-### PHẦN 4: TRỌNG TÂM: QUY TRÌNH PHÊ DUYỆT MUA HÀNG 4 CẤP (08:00 – 11:00)
+### PHẦN 4: TRỌNG TÂM: QUY TRÌNH PHÊ DUYỆT MUA HÀNG 4 CẤP (BM01) (08:00 – 11:00)
 
 🗣️ **Lời thoại thuyết trình:**
-> *"Đây là phân hệ cốt lõi thể hiện tính kỷ luật tài chính và nguyên tắc Phân tách nhiệm vụ (Separation of Duties). Trước đây quy trình giấy mất 1–2 ngày; giờ đây toàn bộ được số hóa khép kín qua 4 cấp phân quyền nghiêm ngặt."*
+> *"Đây là phân hệ cốt lõi thể hiện tính kỷ luật tài chính và nguyên tắc Phân tách nhiệm vụ (Separation of Duties). Toàn bộ quy trình đề xuất mua hàng được chuẩn hóa theo **Biểu Mẫu BM01** của CTECH, số hóa khép kín qua 4 cấp phân quyền nghiêm ngặt."*
 
 🎯 **Thao tác 3 bước duyệt liên tiếp:**
 
 * **Bước 1: Trưởng phòng TCHC thẩm định nhu cầu (Cấp 2):**
   1. Đăng nhập tài khoản **Trần Thị Mai (`mai.tchc` - Trưởng phòng TCHC)**.
-  2. Vào tab **Phê Duyệt Nhu Cầu (Cấp 2)**.
+  2. Vào tab **Phê Duyệt Nhu Cầu (Cấp 2)** $\rightarrow$ Chỉ rõ nhãn **[Biểu Mẫu BM01]**.
   3. Chỉ cho Hội đồng thấy: Giao diện của Trưởng phòng TCHC **CHỈ hiển thị nút "Phê duyệt Cấp 2"** và "Từ chối". Tuyệt đối không thể bấm duyệt giá hay duyệt chi ngân sách.
   4. Bấm **Phê Duyệt Cấp 2** $\rightarrow$ Hệ thống cập nhật trạng thái phiếu chuyển sang `PENDING_ACCOUNTANT`.
   5. Bấm **Đăng xuất**.
 
 * **Bước 2: Kế toán trưởng thẩm định đơn giá & ngân sách (Cấp 3):**
   1. Đăng nhập tài khoản **Lê Hoàng Long (`long.kt` - Kế toán trưởng)**.
-  2. Vào tab **Thẩm Định Giá & NS (Cấp 3)** $\rightarrow$ Kiểm tra bảng so sánh báo giá nhà cung cấp.
+  2. Vào tab **Thẩm Định Giá & NS (Cấp 3)** $\rightarrow$ Chỉ rõ nhãn **[Biểu Mẫu BM01]**, kiểm tra bảng so sánh báo giá nhà cung cấp.
   3. Bấm **Phê Duyệt Cấp 3** $\rightarrow$ Trạng thái phiếu chuyển sang `PENDING_CHAIRMAN`.
   4. Bấm **Đăng xuất**.
 
 * **Bước 3: Chủ tịch Hội đồng trường ký phê duyệt chi (Cấp 4):**
   1. Đăng nhập tài khoản **TS. Phạm Minh Tuấn (`tuan.chutich` - Chủ tịch HĐT)**.
-  2. Mở tab **Dashboard Lãnh Đạo** xem dòng tiền $\rightarrow$ Chuyển sang tab **Ký Duyệt Chi (Cấp 4 - PO)**.
+  2. Mở tab **Dashboard Lãnh Đạo** xem dòng tiền $\rightarrow$ Chuyển sang tab **Ký Duyệt Chi (Cấp 4 - PO)** có gắn nhãn **[Biểu Mẫu BM01]**.
   3. Bấm **Ký Duyệt Chi Hoàn Tất (Cấp 4) - Ban Hành PO**.
   4. Quan sát: Phiếu chuyển thành `APPROVED`, hệ thống **tự động cấp mã Đơn đặt hàng chính thức (ví dụ: `PO-202611-xxx`)** và tự động gửi tín hiệu sang kho để chuẩn bị tiếp nhận.
   5. Bấm **Đăng xuất**.
 
 ---
 
-### PHẦN 5: QUẢN LÝ KHO THỰC PHẨM (WMS) & KIỂM SOÁT HẠN DÙNG FEFO (11:00 – 13:00)
+### PHẦN 5: QUẢN LÝ KHO THỰC PHẨM (WMS), FEFO & KIỂM KÊ KHO (BM03) (11:00 – 13:00)
 
 * **Thao tác đăng nhập:** Bấm vào thẻ **Bùi Đức Thắng (Thủ kho)**.
 * **Màn hình hiển thị:** Tab **Tiếp Nhận PO Đã Duyệt**.
@@ -170,25 +174,36 @@ flowchart LR
    - Các lô hàng có hạn sử dụng dưới 3 ngày được hệ thống đánh dấu đỏ 🔴 `Cận date - Ưu tiên xuất!`.
    - Nhà bếp bắt buộc phải xuất dùng lô này trước theo nguyên tắc **First-Expired, First-Out (FEFO)** để triệt tiêu hao hụt do ôi thiu.
 
+🎯 **Thao tác 3: Đối soát kiểm kê kho định kỳ (Biểu Mẫu BM03)**
+1. Chuyển sang tab **Kiểm Kê Kho (BM03)**.
+2. Chỉ cho Hội đồng thấy bảng chuẩn **Biểu Mẫu BM03**:
+   - Đối soát chi tiết từng dòng: *Mã lô (L2611-01, L2611-12...), Tên nguyên liệu, ĐVT, Tồn sổ sách, Tồn thực tế, Chênh lệch, Nguyên nhân giải trình (Hao hụt cân đong tự nhiên, dập nát bảo quản)*.
+   - Tính pháp lý và minh bạch nội bộ: Thể hiện đại diện chữ ký 3 bên (*Thủ kho lập biên bản - Bếp trưởng xác nhận - Kế toán trưởng thẩm định*).
+   - Nút **"In Phiếu BM03"** để xuất biên bản kiểm kê in ra giấy khi có thanh tra hoặc kiểm toán trường.
+
 * **Thao tác kết thúc phần:** Bấm nút **"Đăng xuất"**.
 
 ---
 
-### PHẦN 6: TÍCH HỢP CTOOL, KIỂM TOÁN VÀ KẾT LUẬN (13:00 – 15:00)
+### PHẦN 6: TÍCH HỢP CTOOL (BM02), KIỂM TOÁN VÀ KẾT LUẬN (13:00 – 15:00)
 
 * **Thao tác đăng nhập:** Đăng nhập lại **Ban Quản trị HTTT (`admin` / `admin123`)**.
 
-🎯 **Thao tác 1: Giám sát tích hợp Ctool & Máy chấm công vân tay**
-* Chuyển tab **Kế Hoạch Suất Ăn Ctool**:
-  - Chỉ cho Hội đồng danh sách 85 CBNV trường CTECH đăng ký ăn trưa.
-  - Cột thời gian quẹt vân tay buổi sáng (`07:35`, `07:45`...). CBNV nào chưa quẹt vân tay trước 09:30 sẽ bị cảnh báo để bếp tối ưu số suất nấu.
-  - Bấm nút **"Đồng Bộ 09:30"** trên thanh Header để chứng minh kết nối API thời gian thực.
+🎯 **Thao tác 1: Giám sát tích hợp Ctool (Biểu Mẫu BM02)**
+* Chuyển tab **Kế Hoạch Suất Ăn Ctool** có gắn nhãn **[Biểu Mẫu BM02]**:
+  - Chỉ cho Hội đồng danh sách cán bộ giảng viên đăng ký ăn trưa chốt trước **21h00 hằng ngày**.
+  - Hiển thị tiến độ phục vụ và đối soát ai đã nhận cơm tại quầy POS trong ngày.
+  - Nút **"Chốt 21h00"** trên thanh Header để chứng minh kết nối API đồng bộ thời gian thực.
 
 🎯 **Thao tác 2: Minh chứng tính toàn vẹn (Audit Log)**
 * Chuyển tab **Nhật Ký Kiểm Toán (Audit)**:
   - Chỉ cho Hội đồng thấy chuỗi vết bất biến (Immutable Audit Trail) được lưu trong Neon PostgreSQL:
     - Thu ngân Đặng Thùy Linh bán đơn POS (ORD-...) $\rightarrow$ Trừ kho BOM.
-    - Bếp trưởng Nguyễn Văn Đạt chạy DSS $\rightarrow$ Sinh phiếu PR.
+    - Bếp trưởng Nguyễn Văn Đạt chạy DSS $\rightarrow$ Sinh phiếu PR (BM01).
+    - Trưởng phòng TCHC Trần Thị Mai duyệt Cấp 2.
+    - Kế toán trưởng Lê Hoàng Long duyệt Cấp 3.
+    - Chủ tịch HĐT TS. Phạm Minh Tuấn ký Cấp 4 ban hành PO.
+    - Thủ kho Bùi Đức Thắng nhập lô hàng LOT/EXP & lập biên bản kiểm kê BM03.
     - Trưởng phòng TCHC Trần Thị Mai duyệt Cấp 2.
     - Kế toán trưởng Lê Hoàng Long duyệt Cấp 3.
     - Chủ tịch HĐT TS. Phạm Minh Tuấn ký Cấp 4 ban hành PO.
