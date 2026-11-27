@@ -1,5 +1,6 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
+import { formatToGMT7 } from '../utils/dateUtils';
 import {
   LayoutDashboard,
   DollarSign,
@@ -279,7 +280,7 @@ export default function AdminDashboardView() {
               ) : (
                 recentLogs.map((log) => (
                   <tr key={log.id} className="hover:bg-slate-800/40 transition">
-                    <td className="p-3 font-mono text-slate-400 text-[11px]">{log.timestamp}</td>
+                    <td className="p-3 font-mono text-slate-400 text-[11px] whitespace-nowrap">{formatToGMT7(log.timestamp)}</td>
                     <td className="p-3 font-semibold text-white">{log.user_info}</td>
                     <td className="p-3">
                       <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-purple-950 text-purple-300 border border-purple-800">

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
+import { formatToGMT7 } from '../utils/dateUtils';
 import {
   ClipboardList,
   Plus,
@@ -161,7 +162,7 @@ export default function ChefPRView() {
                   </div>
                   <h3 className="text-sm font-bold text-white mt-1.5">{pr.title}</h3>
                   <p className="text-xs text-slate-400">
-                    Nhà cung cấp: <strong className="text-white">{pr.supplier_name}</strong> • Lập lúc: {pr.created_at}
+                    Nhà cung cấp: <strong className="text-white">{pr.supplier_name}</strong> • Lập lúc: {formatToGMT7(pr.created_at)}
                   </p>
                 </div>
 

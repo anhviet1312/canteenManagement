@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
+import { getVNDateString } from '../utils/dateUtils';
 import { PackageCheck, ArrowDownToLine, CheckCircle2, Calendar, ShieldAlert, Eye, Lock } from 'lucide-react';
 
 export default function StorekeeperReceiveView() {
@@ -20,8 +21,8 @@ export default function StorekeeperReceiveView() {
     const initialInputs = {};
     pr.items?.forEach(item => {
       initialInputs[item.material_id] = {
-        lot_code: `LOT-${new Date().toISOString().slice(0, 10).replace(/-/g, '')}-${item.material_name.slice(0, 3).toUpperCase()}`,
-        exp_date: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+        lot_code: `LOT-${getVNDateString().replace(/-/g, '')}-${item.material_name.slice(0, 3).toUpperCase()}`,
+        exp_date: getVNDateString(5)
       };
     });
     setBatchInputs(initialInputs);

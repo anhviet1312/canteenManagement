@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useApp } from '../context/AppContext';
 import { apiClient } from '../api/apiClient';
+import { formatToGMT7 } from '../utils/dateUtils';
 import {
   Search,
   Plus,
@@ -635,7 +636,7 @@ export default function CashierPOSView() {
               {completedOrder.customer_name && (
                 <p className="text-[10px] text-slate-600 font-medium mt-0.5">Khách: {completedOrder.customer_name}</p>
               )}
-              <p className="text-[10px] text-slate-400">{completedOrder.time}</p>
+              <p className="text-[10px] text-slate-400 font-mono">{formatToGMT7(completedOrder.time)} (GMT+7)</p>
             </div>
 
             <div className="text-xs space-y-1.5 border-b pb-3 font-mono">

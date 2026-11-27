@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
+import { formatToGMT7 } from '../utils/dateUtils';
 import { Receipt, Search, DollarSign, CreditCard, Banknote, Sparkles } from 'lucide-react';
 
 export default function CashierHistoryView() {
@@ -96,7 +97,7 @@ export default function CashierHistoryView() {
               {filteredOrders.map(ord => (
                 <tr key={ord.id} className="hover:bg-slate-800/40">
                   <td className="p-3 font-mono font-bold text-blue-400">{ord.id}</td>
-                  <td className="p-3 text-slate-400 font-mono">{ord.time}</td>
+                  <td className="p-3 text-slate-400 font-mono whitespace-nowrap">{formatToGMT7(ord.time)}</td>
                   <td className="p-3 font-semibold text-white">{ord.customer_name}</td>
                   <td className="p-3 text-right font-mono font-bold text-emerald-400">
                     {ord.total_amount.toLocaleString()} đ

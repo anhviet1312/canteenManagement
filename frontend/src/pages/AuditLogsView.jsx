@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
+import { formatToGMT7 } from '../utils/dateUtils';
 import { History, ShieldCheck, Search, Clock, User } from 'lucide-react';
 
 export default function AuditLogsView() {
@@ -76,7 +77,7 @@ export default function AuditLogsView() {
                   <td className="p-3 font-mono text-slate-400 whitespace-nowrap">
                     <span className="flex items-center gap-1.5">
                       <Clock className="w-3.5 h-3.5 text-slate-500" />
-                      {log.timestamp}
+                      {formatToGMT7(log.timestamp)}
                     </span>
                   </td>
                   <td className="p-3 font-semibold text-white whitespace-nowrap">

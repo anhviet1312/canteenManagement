@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
+import { getVNCurrentTimeString } from '../utils/dateUtils';
 import {
   Building2,
   RefreshCw,
@@ -19,6 +20,15 @@ export default function Header() {
     syncWithCtool,
     loading
   } = useApp();
+
+  const [vnTime, setVnTime] = useState(() => getVNCurrentTimeString());
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setVnTime(getVNCurrentTimeString());
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   const roleConfig = ROLES[currentUser?.role] || ROLES.CHEF;
   const servedMeals = ctoolMeals.filter(m => m.is_served).length;
@@ -51,6 +61,14 @@ export default function Header() {
 
       {/* Center Live Badges */}
       <div className="hidden xl:flex items-center space-x-4 bg-slate-950/80 px-3.5 py-1.5 rounded-xl border border-slate-800 text-xs">
+        <div className="flex items-center space-x-1.5 text-slate-300 font-mono">
+          <Clock className="w-3.5 h-3.5 text-cyan-400" />
+          <span className="font-bold text-white tracking-wider">{vnTime}</span>
+          <span className="px-1.5 py-0.2 rounded text-[10px] font-bold bg-cyan-950 text-cyan-300 border border-cyan-800">GMT+7</span>
+        </div>
+
+        <div className="h-3 w-px bg-slate-700"></div>
+
         <div className="flex items-center space-x-2">
           <span className="relative flex h-2 w-2">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
