@@ -24,7 +24,9 @@ export default function StorekeeperAuditBM03View() {
 
   // Modal State for New Audit Entry
   const [showAdjustModal, setShowAdjustModal] = useState(false);
+  const [isEditingMode, setIsEditingMode] = useState(false);
   const [selectedMaterial, setSelectedMaterial] = useState(null);
+  const [lotCodeInput, setLotCodeInput] = useState('');
   const [actualQty, setActualQty] = useState('');
   const [auditReason, setAuditReason] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -141,9 +143,30 @@ export default function StorekeeperAuditBM03View() {
   const varianceItems = auditRecords.filter(r => r.variance !== 0).length;
 
   const handleOpenAdjust = (rec) => {
+    setIsEditingMode(true);
     setSelectedMaterial(rec);
+    setLotCodeInput(rec.lot_code);
     setActualQty(rec.actual_qty.toString());
     setAuditReason(rec.reason || '');
+    setShowAdjustModal(true);
+  };
+
+  const handleOpenCreate = () => {
+    setIsEditingMode(false);
+    if (materials.length > 0) {
+      const firstMat = materials[0];
+      const matBatches = batches.filter(b => b.material_id === firstMat.id);
+      const autoLot = matBatches.length > 0 ? matBatches[0].lot_code : `L2611-${firstMat.code.replace('NVL-', '')}`;
+      setSelectedMaterial({
+        material_id: firstMat.id,
+        name: firstMat.name,
+        unit: firstMat.unit,
+        book_qty: firstMat.current_stock
+      });
+      setLotCodeInput(autoLot);
+      setActualQty(firstMat.current_stock.toString());
+      setAuditReason('Kiểm kê định kỳ');
+    }
     setShowAdjustModal(true);
   };
 
@@ -165,21 +188,46 @@ export default function StorekeeperAuditBM03View() {
         );
       }
 
-      // Update local state
-      setAuditRecords(prev => prev.map(item => {
-        if (item.id === selectedMaterial.id) {
-          return {
-            ...item,
-            actual_qty: newActual,
-            variance: newVariance,
-            reason: auditReason,
-            verified_by: currentUser?.full_name || 'Bùi Đức Thắng'
-          };
-        }
-        return item;
-      }));
+      if (isEditingMode) {
+        // Update existing record
+        setAuditRecords(prev => prev.map(item => {
+          if (item.id === selectedMaterial.id) {
+            return {
+              ...item,
+              lot_code: lotCodeInput || item.lot_code,
+              actual_qty: newActual,
+              variance: newVariance,
+              reason: auditReason,
+              verified_by: currentUser?.full_name || 'Bùi Đức Thắng'
+            };
+          }
+          return item;
+        }));
+      } else {
+        // Create new record in audit table
+        const newRecord = {
+          id: `audit-${Date.now()}`,
+          stt: auditRecords.length + 1,
+          lot_code: lotCodeInput || `L2611-${Math.floor(Math.random() * 90 + 10)}`,
+          material_id: selectedMaterial.material_id,
+          name: selectedMaterial.name,
+          unit: selectedMaterial.unit,
+          book_qty: selectedMaterial.book_qty,
+          actual_qty: newActual,
+          variance: newVariance,
+          reason: auditReason || (newVariance === 0 ? 'Khớp số liệu kiểm đếm' : 'Chênh lệch kiểm kê'),
+          status: 'VERIFIED',
+          verified_by: currentUser?.full_name || 'Bùi Đức Thắng'
+        };
+        setAuditRecords(prev => [newRecord, ...prev]);
+      }
 
-      showNotification('Đã cập nhật biên bản kiểm kê và đồng bộ tồn kho!', 'success');
+      showNotification(
+        isEditingMode
+          ? 'Đã cập nhật biên bản kiểm kê và đồng bộ tồn kho!'
+          : 'Đã thêm dòng kiểm kê mới vào Biểu mẫu BM03 và đồng bộ tồn kho!',
+        'success'
+      );
       setShowAdjustModal(false);
       refreshAll();
     } catch (err) {
@@ -220,25 +268,7 @@ export default function StorekeeperAuditBM03View() {
             <span>In Phiếu BM03</span>
           </button>
           <button
-            onClick={() => {
-              if (materials.length > 0) {
-                const firstMat = materials[0];
-                setSelectedMaterial({
-                  id: `audit-${Date.now()}`,
-                  material_id: firstMat.id,
-                  lot_code: `L2611-${Math.floor(Math.random() * 90 + 10)}`,
-                  name: firstMat.name,
-                  unit: firstMat.unit,
-                  book_qty: firstMat.current_stock,
-                  actual_qty: firstMat.current_stock,
-                  variance: 0,
-                  reason: 'Kiểm kê định kỳ khớp số liệu'
-                });
-                setActualQty(firstMat.current_stock.toString());
-                setAuditReason('Kiểm kê định kỳ');
-                setShowAdjustModal(true);
-              }
-            }}
+            onClick={handleOpenCreate}
             className="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded-xl text-xs font-bold shadow-md shadow-cyan-600/30 transition flex items-center space-x-1.5"
           >
             <Plus className="w-4 h-4" />
@@ -423,12 +453,57 @@ export default function StorekeeperAuditBM03View() {
 
             <form onSubmit={handleSaveAdjust} className="space-y-4 text-xs">
               <div>
-                <label className="text-slate-400 block mb-1">Nguyên vật liệu & Mã lô:</label>
-                <div className="p-3 bg-slate-950 rounded-xl border border-slate-800 font-semibold text-white flex items-center justify-between">
-                  <span>{selectedMaterial.name}</span>
-                  <span className="font-mono text-cyan-400">{selectedMaterial.lot_code}</span>
-                </div>
+                <label className="text-slate-300 font-semibold block mb-1">
+                  {isEditingMode ? 'Nguyên vật liệu & Mã lô:' : 'Chọn Nguyên vật liệu kiểm kê:'}
+                </label>
+                {isEditingMode ? (
+                  <div className="p-3 bg-slate-950 rounded-xl border border-slate-800 font-semibold text-white flex items-center justify-between">
+                    <span>{selectedMaterial.name}</span>
+                    <span className="font-mono text-cyan-400 font-bold">{selectedMaterial.lot_code}</span>
+                  </div>
+                ) : (
+                  <select
+                    value={selectedMaterial?.material_id || ''}
+                    onChange={(e) => {
+                      const mat = materials.find(m => m.id === e.target.value);
+                      if (mat) {
+                        const matBatches = batches.filter(b => b.material_id === mat.id);
+                        const autoLot = matBatches.length > 0 ? matBatches[0].lot_code : `L2611-${mat.code.replace('NVL-', '')}`;
+                        setSelectedMaterial({
+                          material_id: mat.id,
+                          name: mat.name,
+                          unit: mat.unit,
+                          book_qty: mat.current_stock
+                        });
+                        setLotCodeInput(autoLot);
+                        setActualQty(mat.current_stock.toString());
+                        setAuditReason('Kiểm kê định kỳ khớp số liệu');
+                      }
+                    }}
+                    className="w-full bg-slate-950 border border-slate-700 rounded-xl p-3 text-white text-xs font-semibold focus:outline-none focus:border-cyan-500 shadow-inner"
+                  >
+                    {materials.map(m => (
+                      <option key={m.id} value={m.id}>
+                        {m.name} ({m.code}) — Tồn sổ sách: {m.current_stock} {m.unit}
+                      </option>
+                    ))}
+                  </select>
+                )}
               </div>
+
+              {!isEditingMode && (
+                <div>
+                  <label className="text-slate-400 block mb-1">Mã Lô (Lot Number):</label>
+                  <input
+                    type="text"
+                    required
+                    value={lotCodeInput}
+                    onChange={e => setLotCodeInput(e.target.value)}
+                    placeholder="VD: L2611-01, LOT-202611-CP..."
+                    className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white font-mono text-xs focus:outline-none focus:border-cyan-500"
+                  />
+                </div>
+              )}
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
