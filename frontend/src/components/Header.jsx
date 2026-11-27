@@ -73,10 +73,10 @@ export default function Header() {
             <button
               onClick={syncWithCtool}
               className="text-slate-400 hover:text-cyan-400 flex items-center space-x-1 transition"
-              title="Đồng bộ API Ctool & Máy chấm công thời gian thực"
+              title="Đồng bộ API Ctool thời gian thực (Chốt 21h00 hằng ngày)"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-cyan-400' : ''}`} />
-              <span>Đồng bộ 09:30</span>
+              <span>Chốt 21h00</span>
             </button>
           </>
         )}

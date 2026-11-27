@@ -73,7 +73,8 @@ def seed_database():
         Product(id="prod-5", code="BM-OP-LA", name="Bánh mì 2 trứng ốp la + pate", category_id="cat-snack", price=20000, cost_price=10500, is_meal_eligible=False, image="🥪"),
         Product(id="prod-6", code="CFE-DEN", name="Cà phê đen đá CTECH", category_id="cat-drink", price=15000, cost_price=4500, is_meal_eligible=False, image="☕"),
         Product(id="prod-7", code="CFE-SUA", name="Cà phê sữa đá pha phin", category_id="cat-drink", price=18000, cost_price=6500, is_meal_eligible=False, image="🧋"),
-        Product(id="prod-8", code="TRA-DAO", name="Trà đào cam sả thanh nhiệt", category_id="cat-drink", price=22000, cost_price=7000, is_meal_eligible=False, image="🍹")
+        Product(id="prod-8", code="TRA-DAO", name="Trà đào cam sả thanh nhiệt", category_id="cat-drink", price=22000, cost_price=7000, is_meal_eligible=False, image="🍹"),
+        Product(id="prod-9", code="COM-THITKHO", name="Cơm thịt ba chỉ kho trứng (Suất 30k)", category_id="cat-meal", price=30000, cost_price=16000, is_meal_eligible=True, image="🍲")
     ]
     db.add_all(products)
     db.commit()
@@ -103,6 +104,11 @@ def seed_database():
         Recipe(id="rec-15", product_id="prod-6", material_id="mat-10", quantity=0.025),
         # Cafe sua
         Recipe(id="rec-16", product_id="prod-7", material_id="mat-10", quantity=0.025),
+        # Com thit kho (Suat 30k)
+        Recipe(id="rec-17", product_id="prod-9", material_id="mat-4", quantity=0.12),
+        Recipe(id="rec-18", product_id="prod-9", material_id="mat-5", quantity=1.0),
+        Recipe(id="rec-19", product_id="prod-9", material_id="mat-6", quantity=0.05),
+        Recipe(id="rec-20", product_id="prod-9", material_id="mat-1", quantity=0.10),
     ]
     db.add_all(recipes)
     db.commit()

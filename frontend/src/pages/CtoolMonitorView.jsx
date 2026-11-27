@@ -34,13 +34,13 @@ export default function CtoolMonitorView() {
         <div>
           <div className="flex items-center space-x-2">
             <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30">
-              Tích Hợp Hệ Sinh Thái CTECH
+              Biểu Mẫu BM02
             </span>
-            <span className="text-xs text-slate-400">CTool ERP & Biometric Machine Integration</span>
+            <span className="text-xs text-slate-400">Bảng Tổng Hợp Suất Ăn CBNV Đồng Bộ Từ Ctool (Chốt 21h00)</span>
           </div>
-          <h2 className="text-xl font-bold text-white mt-1">Giám Sát Suất Ăn Cán Bộ Giảng Viên & Điểm Danh Vân Tay</h2>
+          <h2 className="text-xl font-bold text-white mt-1">Giám Sát Suất Ăn Cán Bộ Giảng Viên & Đối Soát Phát Cơm</h2>
           <p className="text-xs text-slate-300 mt-0.5">
-            Dữ liệu kết nối tự động từ máy chấm công buổi sáng giúp Bếp trưởng chuẩn bị đúng số lượng nấu, tránh lãng phí.
+            Dữ liệu tiếp nhận danh sách đăng ký có ăn/không ăn của CBNV chốt trước 21h00 hằng ngày, đơn giá mặc định 35.000 đ/suất.
           </p>
         </div>
 
@@ -58,7 +58,7 @@ export default function CtoolMonitorView() {
         <div className="p-4 bg-slate-900/90 border border-slate-800 rounded-2xl space-y-1">
           <span className="text-slate-400">Tổng Suất Đăng Ký Ăn Trưa:</span>
           <div className="text-2xl font-bold text-white font-mono">{totalMeals} suất</div>
-          <p className="text-[11px] text-slate-500">Chốt trước 09h30 sáng trên Ctool</p>
+          <p className="text-[11px] text-slate-500">Chốt trước 21h00 hôm trước trên Ctool</p>
         </div>
 
         <div className="p-4 bg-slate-900/90 border border-slate-800 rounded-2xl space-y-1">

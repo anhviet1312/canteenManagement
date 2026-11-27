@@ -50,9 +50,9 @@ export const ROLES = {
     name: 'Thủ kho',
     userTitle: 'Bùi Đức Thắng',
     badge: 'bg-cyan-900/60 text-cyan-300 border-cyan-700',
-    description: 'Tiếp nhận hàng theo PO đã duyệt, ghi nhận Lô & HSD (FEFO), kiểm kê chênh lệch.',
+    description: 'Tiếp nhận hàng theo PO đã duyệt, ghi nhận Lô & HSD (FEFO), kiểm kê chênh lệch BM03.',
     defaultTab: 'inventory_receive',
-    allowedTabs: ['inventory_receive', 'inventory_stock', 'inventory_fefo']
+    allowedTabs: ['inventory_receive', 'inventory_stock', 'inventory_fefo', 'inventory_audit']
   },
   ADMIN: {
     id: 'ADMIN',
@@ -73,6 +73,7 @@ export const ROLES = {
       'inventory_receive',
       'inventory_stock',
       'inventory_fefo',
+      'inventory_audit',
       'ctool_monitor',
       'financial_reports',
       'general_reports',

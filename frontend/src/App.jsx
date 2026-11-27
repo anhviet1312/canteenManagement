@@ -15,6 +15,7 @@ import ApprovalLevel4View from './pages/ApprovalLevel4View';
 import StorekeeperReceiveView from './pages/StorekeeperReceiveView';
 import StorekeeperStockView from './pages/StorekeeperStockView';
 import StorekeeperFEFOView from './pages/StorekeeperFEFOView';
+import StorekeeperAuditBM03View from './pages/StorekeeperAuditBM03View';
 import CtoolMonitorView from './pages/CtoolMonitorView';
 import SuppliersView from './pages/SuppliersView';
 import FinancialReportsView from './pages/FinancialReportsView';
@@ -73,6 +74,8 @@ function MainLayout() {
         return <StorekeeperStockView />;
       case 'inventory_fefo':
         return <StorekeeperFEFOView />;
+      case 'inventory_audit':
+        return <StorekeeperAuditBM03View />;
 
       // SHARED / MONITORING
       case 'ctool_monitor':

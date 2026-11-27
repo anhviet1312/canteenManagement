@@ -18,7 +18,8 @@ import {
   DollarSign,
   PackageCheck,
   AlertTriangle,
-  Receipt
+  Receipt,
+  ClipboardCheck
 } from 'lucide-react';
 
 export default function Sidebar() {
@@ -70,6 +71,7 @@ export default function Sidebar() {
     { id: 'inventory_receive', label: 'Tiếp Nhận PO Đã Duyệt', icon: PackageCheck, badge: pendingReceivePOs },
     { id: 'inventory_stock', label: 'Tồn Kho Nguyên Vật Liệu', icon: Boxes, badge: lowStockCount > 0 ? `${lowStockCount} thiếu` : null },
     { id: 'inventory_fefo', label: 'Quản Lý Lô & Hạn Dùng (FEFO)', icon: Calendar },
+    { id: 'inventory_audit', label: 'Kiểm Kê Kho (BM03)', icon: ClipboardCheck },
 
     // Shared / Monitoring
     { id: 'ctool_monitor', label: 'Kế Hoạch Suất Ăn Ctool', icon: Users2 },

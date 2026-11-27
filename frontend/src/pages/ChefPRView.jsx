@@ -87,9 +87,9 @@ export default function ChefPRView() {
         <div>
           <div className="flex items-center space-x-2">
             <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30">
-              Phân Hệ Bếp Trưởng
+              Biểu Mẫu BM01
             </span>
-            <span className="text-xs text-slate-400">Purchase Requisitions (PR Initiator)</span>
+            <span className="text-xs text-slate-400">Phiếu Đề Xuất Mua Hàng & Phê Duyệt Bốn Cấp</span>
           </div>
           <h2 className="text-xl font-bold text-white mt-1">Quản Lý & Theo Dõi Đề Xuất Mua Hàng</h2>
           <p className="text-xs text-slate-300 mt-0.5">
