@@ -198,6 +198,18 @@ export const AppProvider = ({ children }) => {
     }
   };
 
+  const updateRecipe = async (productId, materialId, quantity) => {
+    try {
+      const res = await apiClient.updateRecipe(productId, materialId, quantity);
+      showNotification(res.message, 'success');
+      await refreshAll();
+      return true;
+    } catch (err) {
+      showNotification(err.message, 'error');
+      return false;
+    }
+  };
+
   // Ctool actions
   const toggleMealServed = async (mealId) => {
     try {
@@ -245,6 +257,7 @@ export const AppProvider = ({ children }) => {
         rejectRequest,
         receiveGoodsIntoWarehouse,
         adjustStock,
+        updateRecipe,
         toggleMealServed,
         syncWithCtool,
         refreshAll,

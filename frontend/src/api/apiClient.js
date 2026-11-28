@@ -49,6 +49,10 @@ export const apiClient = {
   // Menu & BOM
   getCategories: () => apiClient.request('/menu/categories'),
   getProducts: () => apiClient.request('/menu/products'),
+  updateRecipe: (productId, materialId, quantity) => apiClient.request(`/menu/recipes/${productId}/${materialId}`, {
+    method: 'PUT',
+    body: JSON.stringify({ quantity })
+  }),
 
   // POS
   checkout: (orderData) => apiClient.request('/pos/checkout', {

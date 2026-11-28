@@ -1,12 +1,17 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { UtensilsCrossed, Layers, CheckCircle2 } from 'lucide-react';
+import { UtensilsCrossed, Layers, CheckCircle2, Edit2, Save, X, AlertCircle } from 'lucide-react';
 
 export default function ChefMenuBOMView() {
-  const { products } = useApp();
-  const [selectedProduct, setSelectedProduct] = useState(products[0]);
+  const { products, updateRecipe, currentUser } = useApp();
+  const [selectedProductId, setSelectedProductId] = useState(null);
+  const [editModalData, setEditModalData] = useState(null);
+  const [isSaving, setIsSaving] = useState(false);
 
-  const activeProduct = selectedProduct || products[0];
+  const isChefOrAdmin = currentUser?.role === 'CHEF' || currentUser?.role === 'ADMIN';
+
+  // Automatically track updated product from context
+  const activeProduct = products.find(p => p.id === (selectedProductId || products[0]?.id)) || products[0];
 
   const calculateCost = (prod) => {
     if (!prod || !prod.recipes) return 0;
@@ -16,6 +21,29 @@ export default function ChefMenuBOMView() {
   const cost = activeProduct ? calculateCost(activeProduct) : 0;
   const price = activeProduct ? activeProduct.price : 0;
   const profitMargin = price > 0 ? (((price - cost) / price) * 100).toFixed(1) : 0;
+
+  const handleOpenEdit = (rec) => {
+    setEditModalData({
+      product: activeProduct,
+      recipe: rec,
+      newQty: rec.quantity
+    });
+  };
+
+  const handleSaveRecipe = async (e) => {
+    e.preventDefault();
+    if (!editModalData || !editModalData.newQty) return;
+    setIsSaving(true);
+    const success = await updateRecipe(
+      editModalData.product.id,
+      editModalData.recipe.material_id,
+      Number(editModalData.newQty)
+    );
+    setIsSaving(false);
+    if (success) {
+      setEditModalData(null);
+    }
+  };
 
   return (
     <div className="p-6 space-y-6">
@@ -50,7 +78,7 @@ export default function ChefMenuBOMView() {
               return (
                 <div
                   key={prod.id}
-                  onClick={() => setSelectedProduct(prod)}
+                  onClick={() => setSelectedProductId(prod.id)}
                   className={`p-3 rounded-xl border cursor-pointer transition flex items-center justify-between text-xs ${
                     isSelected ? 'bg-blue-600/20 border-blue-500 shadow' : 'bg-slate-950/60 border-slate-800 hover:border-slate-700'
                   }`}
@@ -128,6 +156,7 @@ export default function ChefMenuBOMView() {
                       <th className="p-3 text-right">Định Mức Tiêu Hao (1 suất)</th>
                       <th className="p-3 text-right">Đơn Giá Vốn TB</th>
                       <th className="p-3 text-right">Chi Phí Cấu Thành</th>
+                      <th className="p-3 text-center">Thao Tác</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-800 text-slate-300">
@@ -145,11 +174,25 @@ export default function ChefMenuBOMView() {
                           <td className="p-3 text-right font-mono font-bold text-emerald-400">
                             {rec.amount.toLocaleString()} đ
                           </td>
+                          <td className="p-3 text-center">
+                            {isChefOrAdmin ? (
+                              <button
+                                onClick={() => handleOpenEdit(rec)}
+                                className="px-2.5 py-1 bg-slate-800 hover:bg-cyan-600 hover:text-white text-cyan-300 rounded-lg text-[11px] font-semibold border border-slate-700 transition flex items-center gap-1 mx-auto"
+                                title="Chỉnh sửa định mức nguyên liệu"
+                              >
+                                <Edit2 className="w-3 h-3" />
+                                <span>Sửa</span>
+                              </button>
+                            ) : (
+                              <span className="text-[11px] text-slate-500 italic">Chỉ xem</span>
+                            )}
+                          </td>
                         </tr>
                       ))
                     ) : (
                       <tr>
-                        <td colSpan="5" className="p-6 text-center text-slate-500">
+                        <td colSpan="6" className="p-6 text-center text-slate-500">
                           Mặt hàng đồ uống / đóng gói sẵn không yêu cầu bóc tách nguyên liệu.
                         </td>
                       </tr>
@@ -169,6 +212,108 @@ export default function ChefMenuBOMView() {
           </div>
         )}
       </div>
+
+      {/* Modal: Chỉnh Sửa Định Mức BOM */}
+      {editModalData && (
+        <div className="fixed inset-0 bg-black/75 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+          <div className="bg-slate-900 border border-slate-700 rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-4 animate-scaleUp">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+              <h3 className="text-base font-bold text-white flex items-center gap-2">
+                <Edit2 className="w-5 h-5 text-cyan-400" />
+                Chỉnh Sửa Định Mức BOM (1 Suất)
+              </h3>
+              <button
+                onClick={() => setEditModalData(null)}
+                className="text-slate-400 hover:text-white text-xs"
+              >
+                ✕ Đóng
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveRecipe} className="space-y-4 text-xs">
+              <div className="bg-slate-950 p-3.5 rounded-xl border border-slate-800 space-y-2">
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Món ăn:</span>
+                  <span className="font-bold text-white">{editModalData.product.name}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Nguyên vật liệu:</span>
+                  <span className="font-bold text-cyan-300">{editModalData.recipe.material_name}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Đơn giá vốn TB:</span>
+                  <span className="font-mono text-slate-300">{editModalData.recipe.avg_cost.toLocaleString()} đ/{editModalData.recipe.unit}</span>
+                </div>
+                <div className="flex justify-between border-t border-slate-800 pt-2">
+                  <span className="text-slate-400">Định mức hiện tại:</span>
+                  <span className="font-mono font-bold text-slate-300">{editModalData.recipe.quantity} {editModalData.recipe.unit}</span>
+                </div>
+              </div>
+
+              <div>
+                <label className="text-slate-300 font-bold block mb-1.5">
+                  Định mức tiêu hao mới cho 1 suất ({editModalData.recipe.unit}):
+                </label>
+                <input
+                  type="number"
+                  step="0.01"
+                  min="0.001"
+                  required
+                  value={editModalData.newQty}
+                  onChange={e => setEditModalData({ ...editModalData, newQty: e.target.value })}
+                  className="w-full bg-slate-950 border border-cyan-500 rounded-xl px-3 py-2 text-white font-mono font-bold text-base focus:outline-none focus:ring-1 focus:ring-cyan-500"
+                />
+                <p className="text-[11px] text-slate-400 mt-1">
+                  Ví dụ: 150g = 0.15 kg, muốn tăng thành 180g nhập 0.18 kg.
+                </p>
+              </div>
+
+              {/* Live Preview */}
+              {editModalData.newQty && !isNaN(Number(editModalData.newQty)) && (
+                <div className="p-3 rounded-xl bg-slate-950/80 border border-slate-800 space-y-1.5 font-mono">
+                  <div className="flex justify-between text-slate-300">
+                    <span>Chi phí nguyên liệu mới:</span>
+                    <span className="font-bold text-emerald-400">
+                      {(Math.round(Number(editModalData.newQty) * editModalData.recipe.avg_cost)).toLocaleString()} đ
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-slate-400 text-[11px]">
+                    <span>Chênh lệch chi phí (Cost):</span>
+                    <span className={Number(editModalData.newQty) >= editModalData.recipe.quantity ? 'text-amber-400 font-bold' : 'text-cyan-400 font-bold'}>
+                      {Number(editModalData.newQty) >= editModalData.recipe.quantity ? '+' : ''}
+                      {(Math.round((Number(editModalData.newQty) - editModalData.recipe.quantity) * editModalData.recipe.avg_cost)).toLocaleString()} đ
+                    </span>
+                  </div>
+                </div>
+              )}
+
+              <div className="flex space-x-2 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setEditModalData(null)}
+                  className="flex-1 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl font-semibold transition"
+                >
+                  Hủy Bỏ
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSaving}
+                  className="flex-1 py-2.5 bg-cyan-600 hover:bg-cyan-500 text-white rounded-xl font-bold shadow-md shadow-cyan-600/30 transition flex items-center justify-center space-x-1.5"
+                >
+                  {isSaving ? (
+                    <span>Đang lưu...</span>
+                  ) : (
+                    <>
+                      <Save className="w-4 h-4" />
+                      <span>Lưu Định Mức Mới</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

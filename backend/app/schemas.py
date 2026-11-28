@@ -74,3 +74,7 @@ class StockAdjustRequest(BaseModel):
 class DSSParamRequest(BaseModel):
     safety_factor: float = 1.0
     student_growth: float = 1.1
+
+class RecipeUpdateRequest(BaseModel):
+    quantity: float
+
