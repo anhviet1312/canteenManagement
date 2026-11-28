@@ -14,7 +14,8 @@ import {
   Building,
   UserCheck,
   ShieldAlert,
-  Lock
+  Lock,
+  Send
 } from 'lucide-react';
 
 export default function StorekeeperAuditBM03View() {
@@ -24,6 +25,7 @@ export default function StorekeeperAuditBM03View() {
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filterType, setFilterType] = useState('ALL'); // ALL | MATCHED | VARIANCE
+  const [isSubmittedToAccountant, setIsSubmittedToAccountant] = useState(false);
 
   // Modal State for New Audit Entry
   const [showAdjustModal, setShowAdjustModal] = useState(false);
@@ -244,6 +246,14 @@ export default function StorekeeperAuditBM03View() {
     window.print();
   };
 
+  const handleSubmitToAccountant = () => {
+    setIsSubmittedToAccountant(true);
+    showNotification(
+      'Biên bản kiểm kê BM03 đã được gửi thành công đến Kế toán trưởng (Lê Hoàng Long) thẩm định!',
+      'success'
+    );
+  };
+
   return (
     <div className="p-6 space-y-6">
       {/* Top Banner */}
@@ -286,13 +296,27 @@ export default function StorekeeperAuditBM03View() {
             <span>In Phiếu BM03</span>
           </button>
           {isStorekeeper ? (
-            <button
-              onClick={handleOpenCreate}
-              className="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded-xl text-xs font-bold shadow-md shadow-cyan-600/30 transition flex items-center space-x-1.5"
-            >
-              <Plus className="w-4 h-4" />
-              <span>Tạo Dòng Kiểm Kê Mới</span>
-            </button>
+            <>
+              <button
+                onClick={handleSubmitToAccountant}
+                disabled={isSubmittedToAccountant}
+                className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 shadow ${
+                  isSubmittedToAccountant
+                    ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 cursor-default'
+                    : 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-indigo-600/30'
+                }`}
+              >
+                <Send className="w-4 h-4" />
+                <span>{isSubmittedToAccountant ? '✓ Đã Gửi Kế Toán' : 'Gửi Biên Bản BM03'}</span>
+              </button>
+              <button
+                onClick={handleOpenCreate}
+                className="px-4 py-2 bg-cyan-600 hover:bg-cyan-500 text-white rounded-xl text-xs font-bold shadow-md shadow-cyan-600/30 transition flex items-center space-x-1.5"
+              >
+                <Plus className="w-4 h-4" />
+                <span>Tạo Dòng Kiểm Kê Mới</span>
+              </button>
+            </>
           ) : (
             <span className="px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs font-semibold flex items-center gap-1.5">
               <Lock className="w-3.5 h-3.5 text-amber-400" />
@@ -460,10 +484,16 @@ export default function StorekeeperAuditBM03View() {
             <p className="text-[10px] text-emerald-400 mt-1">✓ Đã đối chiếu định mức tiêu hao</p>
           </div>
 
-          <div className="p-3 rounded-xl bg-slate-950/60 border border-slate-800">
+          <div className={`p-3 rounded-xl border transition ${
+            isSubmittedToAccountant
+              ? 'bg-emerald-950/40 border-emerald-500/50'
+              : 'bg-slate-950/60 border-slate-800'
+          }`}>
             <p className="text-slate-400 font-semibold mb-1">KẾ TOÁN TRƯỞNG THẨM ĐỊNH</p>
             <p className="text-white font-bold">Lê Hoàng Long</p>
-            <p className="text-[10px] text-emerald-400 mt-1">✓ Đã ghi nhận sổ sách kế toán kho</p>
+            <p className={`text-[10px] mt-1 ${isSubmittedToAccountant ? 'text-emerald-400 font-bold' : 'text-slate-400'}`}>
+              {isSubmittedToAccountant ? '✓ Đã tiếp nhận biên bản điện tử' : '⏳ Chờ Thủ kho gửi biên bản'}
+            </p>
           </div>
         </div>
       </div>
