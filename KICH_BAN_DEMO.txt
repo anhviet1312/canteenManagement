@@ -1,0 +1,374 @@
+================================================================================
+KỊCH BẢN THUYẾT TRÌNH VÀ DEMO ĐỒ ÁN CAO HỌC MIS
+HỆ THỐNG THÔNG TIN QUẢN LÝ CĂNG TIN TRƯỜNG CAO ĐẲNG CTECH
+================================================================================
+
+Học phần: Quản trị Hệ thống Thông tin Nâng cao
+Thời lượng báo cáo: 12 đến 15 phút
+Kiến trúc: 3-Tier phân tách (Frontend React 18 + Backend Python FastAPI + Neon PostgreSQL)
+Múi giờ vận hành: GMT+7 (Asia/Ho_Chi_Minh)
+
+
+================================================================================
+MỤC 1: HƯỚNG DẪN CHUẨN BỊ VÀ KHÔI PHỤC DỮ LIỆU DEMO CHUẨN
+================================================================================
+
+1. Khởi động hệ thống:
+   - Nhấp đúp chuột vào file: start_system.bat
+   - Hoặc mở cửa sổ dòng lệnh tại thư mục dự án và gõ: npm run dev
+   - Hệ thống tự động mở trình duyệt tại địa chỉ: http://localhost:5173
+   - Nhấn phím F11 trên bàn phím để chuyển trình duyệt sang chế độ toàn màn hình.
+
+2. Khôi phục dữ liệu Demo chuẩn (Golden Demo State):
+   - Trước buổi thuyết trình, nếu bạn đã bấm thử nghiệm làm số liệu bị thay đổi,
+     chỉ cần chạy lệnh khôi phục để đưa CSDL về đúng 100% kịch bản báo cáo:
+     + Cách 1: Bấm đúp chuột vào file reset_demo.bat tại thư mục dự án.
+     + Cách 2: Mở Terminal và gõ lệnh: npm run db:reset
+   - Toàn bộ các bảng sẽ được dọn sạch, trả về đúng số liệu chuẩn:
+     + Tồn kho Sườn heo = 14.5 kg (dưới mức tồn an toàn 25 kg để kích hoạt cảnh báo DSS).
+     + 3 phiếu đề xuất mua hàng mẫu nằm đúng ở 3 bước duyệt.
+     + Danh sách 12 cán bộ Ctool với tỷ lệ 5/12 đã nhận suất ăn.
+
+
+================================================================================
+MỤC 2: DANH SÁCH 7 TÀI KHOẢN ĐĂNG NHẬP THEO VAI TRÒ (RBAC)
+================================================================================
+
+Tại màn hình đăng nhập, hệ thống đã trang bị sẵn bảng 1-Click Quick Login.
+Bạn chỉ cần nhấp chuột trực tiếp vào ô vai trò tương ứng để đăng nhập tức thì:
+
+1. Thu ngân (CASHIER):
+   - Họ và tên: Đặng Thùy Linh
+   - Tên đăng nhập: linh.pos
+   - Mật khẩu: pos123
+   - Nhiệm vụ: Bán hàng tại quầy POS, quét voucher Ctool, in bill, trừ kho BOM tự động.
+
+2. Bếp trưởng (CHEF):
+   - Họ và tên: Nguyễn Văn Đạt
+   - Tên đăng nhập: chefnvd
+   - Mật khẩu: chef123
+   - Nhiệm vụ: Xem định mức BOM, chạy mô hình dự báo DSS, lập đề xuất mua hàng BM01.
+
+3. Trưởng phòng Tổ chức Hành chính (TCHC):
+   - Họ và tên: Trần Thị Mai
+   - Tên đăng nhập: mai.tchc
+   - Mật khẩu: tchc123
+   - Nhiệm vụ: Thẩm định nhu cầu, kiểm tra tính cần thiết và Phê duyệt Cấp 2.
+
+4. Kế toán trưởng (ACCOUNTANT):
+   - Họ và tên: Lê Hoàng Long
+   - Tên đăng nhập: long.kt
+   - Mật khẩu: kt123
+   - Nhiệm vụ: Thẩm định đơn giá nhà cung cấp, kiểm soát ngân sách và Phê duyệt Cấp 3.
+
+5. Chủ tịch Hội đồng trường (CHAIRMAN):
+   - Họ và tên: TS. Phạm Minh Tuấn
+   - Tên đăng nhập: tuan.chutich
+   - Mật khẩu: ct123
+   - Nhiệm vụ: Xem Executive Dashboard, ký duyệt chi Cấp 4 và ban hành PO chính thức.
+
+6. Thủ kho (STOREKEEPER):
+   - Họ và tên: Bùi Đức Thắng
+   - Tên đăng nhập: thang.kho
+   - Mật khẩu: kho123
+   - Nhiệm vụ: Tiếp nhận hàng theo PO, nhập mã lô và hạn dùng FEFO, kiểm kê kho BM03.
+
+7. Quản trị viên hệ thống (ADMIN):
+   - Tên đại diện: Ban Quản trị HTTT
+   - Tên đăng nhập: admin
+   - Mật khẩu: admin123
+   - Nhiệm vụ: Giám sát toàn diện 7 phân hệ, tra cứu nhật ký kiểm toán bất biến Audit Log.
+
+
+================================================================================
+MỤC 3: TIẾN TRÌNH THUYẾT TRÌNH VÀ DEMO CHI TIẾT (12 ĐẾN 15 PHÚT)
+================================================================================
+
+--------------------------------------------------------------------------------
+PHẦN 1: MỞ ĐẦU VÀ BẢNG ĐIỀU KHIỂN QUẢN TRỊ (Phút 00:00 - 02:00)
+--------------------------------------------------------------------------------
+- Thao tác:
+  + Đăng nhập bằng tài khoản: Ban Quản trị HTTT (admin / admin123).
+  + Màn hình hiển thị: Bảng Điều Khiển Quản Trị Hệ Thống (Admin Dashboard).
+
+- Lời nói mẫu khi trình bày:
+  "Kính thưa Thầy Cô trong Hội đồng chấm thi,
+  Trong đề tài Hệ thống thông tin Quản lý Căn tin Trường Cao đẳng CTECH, nhóm chúng em
+  tập trung giải quyết 3 bài toán lớn trong thực tế vận hành nhà trường:
+  Thứ nhất: Sự rời rạc giữa dữ liệu đăng ký cơm của cán bộ trên app Ctool và nhà bếp.
+  Thứ hai: Quy trình mua sắm thực phẩm bằng giấy tờ thủ công qua 4 cấp kéo dài đến 48 giờ.
+  Thứ ba: Lãng phí thực phẩm tươi sống do bếp trưởng ước lượng theo cảm tính cá nhân.
+  
+  Hệ thống được xây dựng theo kiến trúc phân tách 3 lớp hiện đại: Giao diện React Vite,
+  Backend Python FastAPI và Cơ sở dữ liệu đám mây Neon PostgreSQL.
+  
+  Trên Bảng điều khiển Quản trị mà Thầy Cô đang quan sát, hệ thống cập nhật tức thời
+  các chỉ số vận hành quan trọng:
+  - Doanh thu bán lẻ quầy POS thời gian thực.
+  - Số lượng suất ăn cán bộ Ctool đã nhận trong ngày.
+  - Cảnh báo tồn kho an toàn đối với các mặt hàng thực phẩm tươi sống.
+  - Tiến trình các hồ sơ mua sắm đang nằm tại các bước duyệt.
+  - Dòng nhật ký kiểm toán trực tiếp ghi vết mọi biến động trên CSDL."
+
+- Chuyển giao đoạn:
+  Bấm nút "Đăng xuất" ở góc trên bên phải để chuyển sang phân hệ bán hàng.
+
+
+--------------------------------------------------------------------------------
+PHẦN 2: QUẦY BÁN HÀNG POS VÀ ĐỘNG CƠ TRỪ KHO ĐỊNH MỨC BOM (Phút 02:00 - 05:00)
+--------------------------------------------------------------------------------
+- Thao tác:
+  + Đăng nhập tài khoản: Đặng Thùy Linh (Thu ngân / CASHIER).
+  + Màn hình hiển thị: Quầy Bán Hàng POS.
+
+- Điểm nhấn phân quyền cần chỉ rõ cho Hội đồng:
+  Giao diện của Thu ngân được tối giản hoàn toàn, chỉ có chức năng bán hàng POS và
+  xem lịch sử đơn hàng của ca, không hề có các nút phê duyệt hay chỉnh sửa kho.
+
+- Thao tác tạo 2 đơn hàng mẫu:
+  1. Đơn 1 (Bán cho Sinh viên):
+     - Chọn tab khách hàng: HSSV / Khách lẻ.
+     - Chọn 1 suất: Cơm thịt ba chỉ kho trứng (Suất 30k) giá 30.000 đ.
+     - Chọn 1 cốc: Trà đào cam sả giá 22.000 đ.
+     - Nêu bật: Nhà trường phục vụ cả 2 khung giá 30.000 đ và 35.000 đ cho sinh viên.
+     - Bấm nút Thanh toán -> Chọn phương thức VietQR -> Bấm Hoàn tất -> In hóa đơn.
+
+  2. Đơn 2 (Bán cho Cán bộ Giảng viên Ctool):
+     - Chuyển tab khách hàng sang: Suất ăn CBNV Ctool.
+     - Chọn 1 suất: Cơm sườn nướng mật ong giá 35.000 đ.
+     - Tại ô tìm kiếm cán bộ: Gõ chữ "Hằng" hoặc mã "0520" -> Dropdown tự động gợi ý
+       ThS. Đỗ Thu Hằng (Khoa CNTT).
+     - Điểm nhấn kiểm soát gian lận: Thu ngân không được tự gõ tên tùy tiện mà phải chọn
+       đúng cán bộ từ Ctool. Nếu cán bộ này đã nhận cơm trước đó, hệ thống sẽ hiện cảnh
+       báo đỏ và khóa cứng nút thanh toán, ngăn chặn triệt để việc lấy cơm 2 lần.
+     - Khi hợp lệ: Hệ thống áp dụng Voucher Ctool trừ 35.000 đ, số tiền khách trả là 0 đ.
+     - Bấm Hoàn tất thanh toán.
+
+- Điểm nhấn học thuật MIS (Động cơ khấu trừ định mức BOM Engine):
+  "Kính thưa Thầy Cô, ngay khi bill cơm sườn được thanh toán, động cơ BOM Engine đã áp dụng
+  nguyên lý khấu trừ ngược (Backflushing) để tự động quy đổi và trừ trực tiếp trên CSDL:
+  150g sườn heo tươi, 120g gạo thơm ST25 và 80g rau cải ngọt.
+  Thao tác này giúp hệ thống tự động tính giá vốn hàng bán và lợi nhuận gộp tức thời,
+  đồng thời tạo số liệu tiêu hao chuẩn để cuối ngày đối soát chống thất thoát thịt sườn."
+
+- Chuyển giao đoạn:
+  Bấm nút "Đăng xuất" để chuyển sang vai trò Bếp trưởng.
+
+
+--------------------------------------------------------------------------------
+PHẦN 3: BẾP TRƯỞNG, MÔ HÌNH DỰ BÁO DSS VÀ LẬP ĐỀ XUẤT BM01 (Phút 05:00 - 08:00)
+--------------------------------------------------------------------------------
+- Thao tác:
+  + Đăng nhập tài khoản: Nguyễn Văn Đạt (Bếp trưởng / CHEF).
+  + Mở tab chức năng: Hỗ Trợ Ra Quyết Định (DSS).
+
+- Lời nói mẫu giải thích Mô hình toán học DSS:
+  "Để giải quyết bài toán chống lãng phí thực phẩm tươi sống có hạn dùng ngắn, hệ thống
+  cung cấp phân hệ DSS cho Bếp trưởng dựa trên công thức cân đối nhu cầu:
+  Q_order = max( 0, D_ctool + D_sinh_vien + SS - I_current - Q_incoming )
+  
+  Trong đó:
+  - D_ctool là nhu cầu cán bộ đã chốt chắc chắn trước 21h00 tối hôm trước.
+  - D_sinh_vien là nhu cầu dự báo ngẫu nhiên từ sinh viên và khách lẻ.
+  - SS là mức tồn kho an toàn để dự phòng rủi ro.
+  - I_current là lượng thịt sườn đang có sẵn trong tủ đông (bắt buộc phải trừ ra).
+  - Q_incoming là các đơn hàng PO đã duyệt hôm qua đang trên đường vận chuyển về."
+
+- Thao tác trên màn hình:
+  + Thử kéo thanh trượt "Hệ số an toàn" hoặc "Dự báo sinh viên" tăng lên -> Toàn bộ bảng
+    gợi ý tự động tính toán lại số lượng cần mua theo thời gian thực.
+  + Chỉ vào các dòng hiển thị trạng thái màu đỏ (Nguy cấp) như Thịt sườn heo, Rau cải do
+    tồn kho đang tụt dưới mức an toàn.
+  + Bấm nút: "1-Click Chuyển Thành Đề Xuất Mua Hàng" -> Hệ thống tự động gom các mặt hàng
+    thiếu, tính tổng tiền dự toán và tạo ngay một phiếu Đề xuất mua hàng điện tử theo
+    chuẩn Biểu Mẫu BM01.
+
+- Chuyển giao đoạn:
+  Bấm nút "Đăng xuất" để bắt đầu luồng phê duyệt 4 cấp.
+
+
+--------------------------------------------------------------------------------
+PHẦN 4: TRỌNG TÂM - QUY TRÌNH PHÊ DUYỆT MUA SẮM 4 CẤP BM01 (Phút 08:00 - 11:00)
+--------------------------------------------------------------------------------
+Đây là phần quan trọng nhất để chứng minh nguyên tắc Phân nhiệm nghiêm ngặt
+(Segregation of Duties - SoD) trong kiểm soát nội bộ nhà trường:
+
+1. Phê duyệt Cấp 2 (Thẩm định nhu cầu của Phòng TCHC):
+   - Đăng nhập: Trần Thị Mai (Trưởng phòng TCHC / mai.tchc).
+   - Mở tab: Phê Duyệt Nhu Cầu (Cấp 2) - có gắn nhãn Biểu Mẫu BM01.
+   - Thao tác: Kiểm tra danh mục nguyên liệu do Bếp trưởng đề xuất -> Bấm nút màu xanh:
+     "Phê Duyệt Nhu Cầu (Cấp 2)".
+   - Kết quả: Trạng thái phiếu lập tức chuyển sang PENDING_ACCOUNTANT (Chờ Kế toán duyệt).
+   - Bấm Đăng xuất.
+
+2. Phê duyệt Cấp 3 (Thẩm định đơn giá và ngân sách của Phòng Kế toán):
+   - Đăng nhập: Lê Hoàng Long (Kế toán trưởng / long.kt).
+   - Mở tab: Thẩm Định Giá & NS (Cấp 3) - có gắn nhãn Biểu Mẫu BM01.
+   - Thao tác: Đối chiếu đơn giá của nhà cung cấp C.P với hợp đồng khung -> Bấm nút:
+     "Phê Duyệt Đơn Giá & Ngân Sách (Cấp 3)".
+   - Kết quả: Trạng thái phiếu chuyển sang PENDING_CHAIRMAN (Trình Chủ tịch HĐT).
+   - Bấm Đăng xuất.
+
+3. Phê duyệt Cấp 4 (Ký duyệt chi tối cao và ban hành Đơn đặt hàng PO):
+   - Đăng nhập: TS. Phạm Minh Tuấn (Chủ tịch Hội đồng trường / tuan.chutich).
+   - Mở tab: Ký Duyệt Chi (Cấp 4) - gắn nhãn Biểu Mẫu BM01.
+   - Thao tác: Xem xét tờ trình đã có đủ chữ ký của Bếp, TCHC và Kế toán -> Bấm nút:
+     "Ký Phê Duyệt Chi Hoàn Tất (Cấp 4) - Ban Hành PO".
+   - Kết quả: Phiếu chuyển sang APPROVED, hệ thống tự động sinh Mã đơn đặt hàng chính thức
+     (ví dụ: PO-202611-001) và phát tín hiệu điện tử sang kho để sẵn sàng nhận hàng.
+   - Bấm Đăng xuất.
+
+
+--------------------------------------------------------------------------------
+PHẦN 5: THỦ KHO - NHẬP KHO PO, QUẢN LÝ LÔ FEFO VÀ KIỂM KÊ BM03 (Phút 11:00 - 13:00)
+--------------------------------------------------------------------------------
+- Thao tác:
+  + Đăng nhập tài khoản: Bùi Đức Thắng (Thủ kho / thang.kho).
+  + Màn hình hiển thị: Phân Hệ Quản Lý Kho Thực Phẩm (WMS).
+
+- Thao tác 1: Tiếp nhận hàng hóa theo PO đã duyệt Cấp 4:
+  + Vào tab: Tiếp Nhận PO Đã Duyệt.
+  + Thấy đơn PO do Chủ tịch HĐT vừa ký duyệt chi.
+  + Bấm nút: "Tiếp Nhận & Nhập Kho Ngay" -> Mở biên bản giao nhận hàng thực tế.
+  + Thủ kho kiểm tra quy cách, nhập Mã lô sản xuất và Hạn sử dụng (EXP) cho từng nguyên liệu.
+  + Bấm: "Xác Nhận Tiếp Nhận & Nhập Kho" -> Số lượng tồn kho trên PostgreSQL tăng tương ứng.
+
+- Thao tác 2: Quản lý Lô và Hạn dùng theo nguyên tắc FEFO:
+  + Mở tab: Quản Lý Lô & Hạn Dùng (FEFO).
+  + Nêu bật: Hệ thống tự động sắp xếp các lô có hạn dùng gần nhất lên trên đầu để đầu bếp
+    ưu tiên lấy ra nấu trước, loại bỏ hoàn toàn tình trạng để quên thực phẩm hết hạn.
+
+- Thao tác 3: Kiểm kê kho định kỳ và xử lý chênh lệch theo Biểu Mẫu BM03:
+  + Mở tab: Kiểm Kê Kho (BM03).
+  + Giới thiệu Biên bản kiểm kê thực tế đối soát giữa Tồn sổ sách và Tồn thực tế.
+  + Bấm nút: "In Phiếu BM03" để demo tính năng in ấn biên bản có đủ 3 chữ ký:
+    Thủ kho kiểm đếm - Bếp trưởng xác nhận tiêu hao - Kế toán trưởng thẩm định chi phí.
+
+- Chuyển giao đoạn:
+  Bấm nút "Đăng xuất".
+
+
+--------------------------------------------------------------------------------
+PHẦN 6: GIÁM SÁT SUẤT ĂN CTOOL BM02 VÀ ĐỒNG BỘ CHỐT 21H00 (Phút 13:00 - 14:00)
+--------------------------------------------------------------------------------
+- Thao tác:
+  + Đăng nhập lại tài khoản: Ban Quản trị HTTT hoặc Bếp trưởng.
+  + Mở tab: Kế Hoạch Suất Ăn Ctool (Biểu Mẫu BM02).
+
+- Lời nói mẫu khi trình bày:
+  "Kính thưa Thầy Cô, mốc 21h00 hằng ngày là hạn chót cán bộ giáo viên CTECH đăng ký
+  suất ăn trưa trên ứng dụng Ctool. Sau 21h00, Ctool sẽ khóa chức năng đăng ký.
+  
+  Lúc này, hệ thống Căn tin kích hoạt module Ctool Adapter để kéo toàn bộ danh sách đã
+  chốt về CSDL. Trên thanh Header, hệ thống trang bị nút 'Chốt 21h00'.
+  Em xin bấm nút này để mô phỏng luồng gọi API thời gian thực."
+
+- Thao tác bấm nút:
+  Bấm vào nút "Chốt 21h00" trên thanh Header -> Hệ thống hiện thông báo thành công,
+  số lượng suất ăn trên Header và bảng BM02 lập tức nhảy số tăng thêm một cán bộ vừa
+  check-in điểm danh mà không cần tải lại trình duyệt.
+
+
+--------------------------------------------------------------------------------
+PHẦN 7: QUẢN TRỊ VIÊN - NHẬT KÝ AUDIT TRAIL VÀ KẾT LUẬN (Phút 14:00 - 15:00)
+--------------------------------------------------------------------------------
+- Thao tác:
+  + Đăng nhập: Ban Quản trị HTTT (admin / admin123).
+  + Mở tab: An Toàn & Kiểm Toán Hệ Thống (Audit Logs).
+
+- Lời nói mẫu kết luận:
+  "Kính thưa Hội đồng, toàn bộ hành động vừa rồi của Thu ngân bán hàng, Bếp trưởng lập đề
+  xuất, 3 cấp lãnh đạo phê duyệt, Thủ kho nhập kho và sự kiện đồng bộ Ctool đều đã được
+  hệ thống tự động ghi vết bất biến (Immutable Audit Trail) vào bảng audit_logs với đầy đủ
+  thời gian GMT+7, người thao tác và chi tiết sự kiện.
+  
+  Đặc biệt, hệ thống tuân thủ nghiêm ngặt nguyên tắc Phân nhiệm (SoD): Tài khoản Quản trị
+  viên chỉ có quyền giám sát kỹ thuật, khi vào các tab mua sắm hay kho đều ở chế độ Chỉ Xem,
+  hoàn toàn không thể tự ý duyệt tiền hay nhập kho thay cho các bộ phận chuyên môn.
+  
+  Hệ thống Căn tin CTECH đã chuyển đổi toàn diện mô hình vận hành từ thủ công sang tự động
+  hóa, giải quyết triệt để bài toán lãng phí thực phẩm tươi sống và minh bạch tài chính.
+  Em xin chân thành cảm ơn Thầy Cô và sẵn sàng lắng nghe các câu hỏi của Hội đồng!"
+
+
+================================================================================
+MỤC 4: HƯỚNG DẪN TRẢ LỜI CÁC CÂU HỎI PHẢN BIỆN CỦA HỘI ĐỒNG
+================================================================================
+
+Dưới đây là 5 câu hỏi trọng tâm Hội đồng thường hỏi và câu trả lời chuẩn xác nhất:
+
+CÂU 1:
+Tại sao đồ ăn đã nấu chín từ sáng rồi mà khi khách mua tại quầy POS mới trừ nguyên liệu?
+Bước này có tác dụng thực tế gì?
+
+TRẢ LỜI:
+Dạ thưa Thầy Cô, về mặt vật lý đồ ăn đúng là đã nấu trên khay. Nhưng trong các hệ thống
+ERP quản trị nhà hàng và sản xuất lớn (như SAP hay Odoo), đây là phương pháp kế toán
+tiêu chuẩn mang tên Khấu trừ ngược định mức (Backflushing).
+Cơ chế này có 2 tác dụng thực tế sống còn:
+Thứ nhất: Tự động tính giá vốn hàng bán (COGS) và lợi nhuận gộp tức thời cho từng đĩa cơm.
+Thứ hai: Làm căn cứ đối soát chống thất thoát. Ví dụ sáng Bếp lĩnh 20kg sườn, cả ngày bill
+POS bán được 100 suất tương ứng 15kg sườn. Cuối ngày đếm khay phải còn đúng 5kg sườn.
+Nếu đếm chỉ còn 3kg thì nhà trường phát hiện ngay có 2kg sườn bị hao hụt bất thường để
+yêu cầu giải trình, tránh tình trạng nhân viên ăn bớt mang về.
+
+
+CÂU 2:
+Hệ thống chốt suất ăn Ctool trước 21h00, vậy tại sao sau 21h00 người dùng vẫn bấm nút
+đồng bộ được? Điều này có hợp lý không?
+
+TRẢ LỜI:
+Dạ thưa Thầy Cô, điều này hoàn toàn hợp lý vì có sự khác biệt giữa 2 đối tượng:
+- Mốc trước 21h00 là hạn chót dành cho Cán bộ nhân viên đăng ký trên app Ctool. Đúng 21h00
+  Ctool sẽ đóng cổng đăng ký.
+- Còn hành động Đồng bộ API là của Căn tin. Chính vì Ctool chốt lúc 21h00 nên từ sau 21h00
+  (ví dụ 21h05 hoặc 6h00 sáng hôm sau Bếp trưởng vào ca) mới là thời điểm chuẩn xác nhất
+  để Căn tin kéo bản danh sách chính thức về chuẩn bị nấu.
+Ngoài ra, nút đồng bộ cho phép Bếp trưởng cập nhật kịp thời các trường hợp phát sinh đột
+xuất vào sáng hôm sau (như đoàn khách công tác hoặc giảng viên thỉnh giảng) đã được trường
+phê duyệt đặc cách.
+
+
+CÂU 3:
+Hệ thống hiện tại có thể được quy về phân hệ nào trong Quản trị Hệ thống Thông tin (MIS)?
+
+TRẢ LỜI:
+Dạ thưa Thầy Cô, hệ thống không chỉ là một phần mềm bán hàng POS đơn thuần, mà là một
+Hệ thống Thông tin Doanh nghiệp tích hợp toàn diện (Mini-ERP) bao trùm cả 4 tầng tháp
+quản trị theo chuẩn học thuật của Laudon và Laudon:
+1. Tầng tác nghiệp: Phân hệ xử lý giao dịch TPS (POS thu ngân và điểm danh Ctool).
+2. Tầng kho vận: Phân hệ WMS và BOM Engine (Quản lý lô FEFO và trừ kho tự động).
+3. Tầng chiến thuật: Phân hệ hỗ trợ ra quyết định DSS (Mô hình toán tối ưu tồn kho) và
+   Hệ thống quy trình phê duyệt điện tử 4 cấp (Workflow Management).
+4. Tầng chiến lược: Phân hệ thông tin lãnh đạo EIS (Executive Dashboard cho Chủ tịch HĐT).
+
+
+CÂU 4:
+Hệ thống này có phân hệ Quản trị Quan hệ Khách hàng (CRM) hay không?
+
+TRẢ LỜI:
+Dạ thưa Thầy Cô, trong phạm vi đề tài này, hệ thống tập trung giải quyết bài toán cốt lõi
+là Quản trị vận hành nội bộ (Back-office MIS và Chuỗi cung ứng kho bếp). Do đó, tại quầy
+bán hàng sử dụng mô hình POS tốc độ cao do thu ngân thao tác để giải tỏa hàng đợi 10 đến
+15 giây mỗi lượt cho sinh viên giờ cao điểm.
+Về mặt CRM, hệ thống đã tích hợp phân hệ CRM nội bộ (B2E) để nhận diện cán bộ Ctool và tự
+động áp dụng chính sách trợ cấp 35.000 đ.
+Còn CRM cho sinh viên chính là Hướng phát triển mở rộng trong Giai đoạn 2: Tích hợp trực
+tiếp vào App Sinh viên CTECH Mobile sẵn có của trường để sinh viên xem thực đơn, nạp tiền
+vào thẻ sinh viên thông minh và đặt trước suất ăn (Pre-order).
+
+
+CÂU 5:
+Tài khoản Quản trị viên (ADMIN) có được bấm phê duyệt mua hàng hoặc nhập kho thay cho
+các bộ phận khác không?
+
+TRẢ LỜI:
+Dạ thưa Thầy Cô, tuyệt đối không. Để tuân thủ nguyên tắc Phân nhiệm nghiêm ngặt (SoD)
+trong Kiểm soát nội bộ, Quản trị viên chỉ là nhân sự kỹ thuật CNTT, chỉ có quyền Giám sát
+(Chế độ Chỉ Xem). Mọi thao tác duyệt chi thuộc thẩm quyền duy nhất của Chủ tịch HĐT, duyệt
+giá của Kế toán trưởng, duyệt nhu cầu của TP. TCHC và nhập kho vật lý duy nhất thuộc về
+Thủ kho Bùi Đức Thắng. Cả giao diện và API Backend đều kiểm tra chặn quyền này.
+
+================================================================================
+HẾT KỊCH BẢN - CHÚC BẠN CÓ MỘT BUỔI BẢO VỆ ĐỒ ÁN THÀNH CÔNG RỰC RỠ!
+================================================================================
