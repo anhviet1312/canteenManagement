@@ -256,7 +256,7 @@ export default function ChefMenuBOMView() {
                 </label>
                 <input
                   type="number"
-                  step="0.01"
+                  step="any"
                   min="0.001"
                   required
                   value={editModalData.newQty}
